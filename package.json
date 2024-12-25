@@ -3,7 +3,8 @@
   "productName": "electron-complex-demo",
   "version": "1.0.0",
   "description": "My Electron application description",
-  "main": ".vite/build/main.js",
+  "type": "module",
+  "main": ".vite/build/main.mjs",
   "scripts": {
     "start": "electron-forge start",
     "package": "electron-forge package",
@@ -31,6 +32,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "async-call-rpc": "^6.4.2",
     "electron-squirrel-startup": "^1.0.1"
   }
 }
