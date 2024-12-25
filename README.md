@@ -17,6 +17,7 @@
 
 `package.json` 中需要增加 `"type": "module"`。
 `forge.config.js` 更改后缀为 `forge.config.cjs` 因为 `electron-forge` 无法动态加载 `ESM` 模块的问件。
+`vite.xxx.config.js` 模块暴露方式改为 `export default` , 后缀名可以改成 `mjs` 。
 
 关于 `vite` 配置文件:
 
@@ -30,3 +31,65 @@
 
 `ESModule` 中是没有 `__dirname` 这些默认变量的，需要换成对应的 `import.meta.dirname` 或者其他变量。
 
+### 多窗口
+
+通常稍大一些的桌面应用都有多个窗口组成，假设所有的窗口前端文件都在 `/src/renderer/` 下分文件夹放置：
+
+```shell
+├── node_modules
+├── src
+│    ├── main
+│    ├── preload
+│    └── renderer
+│            ├── main
+│            │     ├── vite.config.js
+│            │     └── index.html
+│            └── secondary
+│                  ├── vite.config.js
+│                  └── index.html
+├── package.json
+├── forge.config.js
+├── vite.main.confg.js
+├── vite.preload.config.js
+└── vite.renderer.config.js
+```
+
+如上图，可以在每个窗口前端文件夹中放置对应的 vite.config.js 配置文件和 index.html 入口文件。
+共通的配置内容可以放在根目录的 vite.renderer.config.js 中。
+单独的配置文件中需要重新设置 root 属性。
+
+```js
+import { mergeConfig } from "vite";
+import defaultConfig from "../../../vite.renderer.config.js";
+
+export default mergeConfig(defaultConfig, {
+  root: import.meta.dirname
+});
+```
+
+最后在根目录的 forge.config.js 配置文件中配置多窗口。
+
+```js
+modules.exports = {
+  plugins: [
+    {
+      name: "@electron-forge/plugin-vite",
+      config: {
+        build: [
+          // main process 
+        ],
+        renderer: [
+          {
+            name: 'main_window',
+            config: 'src/renderer/main/vite.config.js',
+          },
+          {
+            name: 'secondary_window',
+            config: 'src/renderer/secondary/vite.config.js',
+          }
+        ],
+      }
+    }
+  ]
+}
+```

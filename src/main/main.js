@@ -28,11 +28,33 @@ const createWindow = () => {
   mainWindow.webContents.openDevTools();
 };
 
+const createSecondaryWindow = () => {
+  // Create the browser window.
+  const secondaryWindow = new BrowserWindow({
+    width: 400,
+    height: 300,
+    webPreferences: {
+      preload: path.join(import.meta.dirname, 'preload.mjs'),
+    },
+  });
+
+  // and load the index.html of the app.
+  if (SECONDARY_WINDOW_VITE_DEV_SERVER_URL) {
+    secondaryWindow.loadURL(SECONDARY_WINDOW_VITE_DEV_SERVER_URL);
+  } else {
+    secondaryWindow.loadFile(path.join(import.meta.dirname, `../renderer/${SECONDARY_WINDOW_VITE_NAME}/index.html`));
+  }
+
+  // Open the DevTools.
+  secondaryWindow.webContents.openDevTools();
+};
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
   createWindow();
+  createSecondaryWindow();
 
   // On OS X it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.

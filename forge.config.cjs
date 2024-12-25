@@ -46,8 +46,12 @@ module.exports = {
         renderer: [
           {
             name: 'main_window',
-            config: 'vite.renderer.config.mjs',
+            config: 'src/renderer/main/vite.config.js',
           },
+          {
+            name: 'secondary_window',
+            config: 'src/renderer/secondary/vite.config.js',
+          }
         ],
       },
     },
