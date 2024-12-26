@@ -93,3 +93,7 @@ out/
 
 # Temp
 .temp
+
+# Visualizer Reports
+states.html
+states-*.html

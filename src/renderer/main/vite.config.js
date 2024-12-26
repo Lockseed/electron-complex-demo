@@ -1,5 +1,6 @@
 import { join } from "node:path"
 import { defineConfig } from "vite";
+import { visualizer } from 'rollup-plugin-visualizer';
 
 export default defineConfig((incomingConfigs) => {
   const { mode, forgeConfigSelf } = incomingConfigs;
@@ -11,12 +12,17 @@ export default defineConfig((incomingConfigs) => {
   const dirname = import.meta.dirname;
   const outDir = join(process.cwd(), `.vite/renderer/${name}`);
 
+  const NPM_COMMAND = process.env.npm_lifecycle_event;
+
   return {
     root: dirname,
     mode,
     build: {
       target: "esnext",
       outDir,
-    }
+    },
+    plugins: [
+      NPM_COMMAND === 'report' ? visualizer({ filename: `states-renderer-${name}.html` }) : null,
+    ].filter(Boolean),
   }
 });

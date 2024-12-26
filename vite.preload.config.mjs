@@ -1,4 +1,7 @@
 import { defineConfig } from 'vite';
+import { visualizer } from 'rollup-plugin-visualizer';
+
+const NPM_COMMAND = process.env.npm_lifecycle_event;
 
 // https://vitejs.dev/config
 export default defineConfig({
@@ -10,6 +13,9 @@ export default defineConfig({
         entryFileNames: '[name].mjs',
         chunkFileNames: '[name].mjs',
       },
+      plugins: [
+        NPM_COMMAND === 'report' ? visualizer({ filename: 'states-preload.html' }) : null,
+      ].filter(Boolean),
     }
   }
 });
