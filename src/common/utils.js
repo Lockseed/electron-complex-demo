@@ -699,6 +699,16 @@ const _setImmediate = ((setImmediateSupported, postMessageSupported) => {
 const asap = typeof queueMicrotask !== 'undefined' ?
   queueMicrotask.bind(_global) : ( typeof process !== 'undefined' && process.nextTick || _setImmediate);
 
+/**
+ * 
+ * @param {number} ms 
+ * @returns {Promise<void>} 
+ */
+function sleep(ms) {
+  if (!isNumber(ms)) throw new TypeError("Invalid argument");
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 // *********************
 
 export {
@@ -758,5 +768,6 @@ export {
   isAsyncFn,
   isThenable,
   _setImmediate as setImmediate,
-  asap
+  asap,
+  sleep
 };

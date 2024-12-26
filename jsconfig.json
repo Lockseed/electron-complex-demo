@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "checkJs": false,
+    "resolveJsonModule": true,
+    "moduleResolution": "node",
+    "target": "esnext",
+    "module": "esnext",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+  },
+  "exclude": [
+    "dist",
+    "node_modules",
+    "build",
+    "out",
+    ".vscode",
+    "coverage",
+    ".npm",
+    ".yarn",
+    ".vite",
+    ".temp",
+    "src/renderer"
+  ],
+  "typeAcquisition": {
+    "enable": true,
+    "include": ["node", "electron"]
+  }
+}

@@ -11,6 +11,7 @@ export default defineConfig((incomingConfigs) => {
 
   const dirname = import.meta.dirname;
   const outDir = join(process.cwd(), `.vite/renderer/${name}`);
+  const srcDir = join(process.cwd(), "src");
 
   const NPM_COMMAND = process.env.npm_lifecycle_event;
 
@@ -24,5 +25,10 @@ export default defineConfig((incomingConfigs) => {
     plugins: [
       NPM_COMMAND === 'report' ? visualizer({ filename: `states-renderer-${name}.html` }) : null,
     ].filter(Boolean),
+    resolve: {
+      alias: {
+        '@': srcDir,
+      },
+    },
   }
 });
