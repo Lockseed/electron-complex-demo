@@ -7,6 +7,7 @@
 - [] 构建一套跨进程调用方法、监听事件的能力。
 - [] 构建一套跨进程实时同步数据的能力。
 - [] 在项目中引入网络请求，磁盘读写，数据库操作的能力。
+- [] 创建并引入原生依赖（addOn）。
 
 ## 记录
 
@@ -50,20 +51,34 @@
 ├── package.json
 ├── forge.config.js
 ├── vite.main.confg.js
-├── vite.preload.config.js
-└── vite.renderer.config.js
+└── vite.preload.config.js
 ```
 
 如上图，可以在每个窗口前端文件夹中放置对应的 vite.config.js 配置文件和 index.html 入口文件。
-共通的配置内容可以放在根目录的 vite.renderer.config.js 中。
-单独的配置文件中需要重新设置 root 属性。
+vite 配置文件中需要重新设置 root 属性和相关的 build 配置。
 
 ```js
-import { mergeConfig } from "vite";
-import defaultConfig from "../../../vite.renderer.config.js";
+import { join } from "node:path"
+import { defineConfig } from "vite";
 
-export default mergeConfig(defaultConfig, {
-  root: import.meta.dirname
+export default defineConfig((incomingConfigs) => {
+  const { mode, forgeConfigSelf } = incomingConfigs;
+  const name = forgeConfigSelf.name ?? "";
+
+  // import.meta.dirname 指向当前配置文件所在的目录(无 file:// 前缀)
+  // process.cwd() 指向当前工作目录(无 file:// 前缀)
+
+  const dirname = import.meta.dirname;
+  const outDir = join(process.cwd(), `.vite/renderer/${name}`);
+
+  return {
+    root: dirname,
+    mode,
+    build: {
+      target: "esnext",
+      outDir,
+    }
+  }
 });
 ```
 
