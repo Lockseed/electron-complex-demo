@@ -17,7 +17,7 @@
 但既然是做测试那么 `ESModule` 文件如何和 electron 结合运用也需要尝试一下，所以有几个地方需要修改。
 
 `package.json` 中需要增加 `"type": "module"`。
-`forge.config.js` 更改后缀为 `forge.config.cjs` 因为 `electron-forge` 无法动态加载 `ESM` 模块的问件。
+`forge.config.js` 更改后缀为 `forge.config.mjs`，内部的模块引用、导出也好相应更改。
 `vite.xxx.config.js` 模块暴露方式改为 `export default` , 后缀名可以改成 `mjs` 。
 
 关于 `vite` 配置文件:
@@ -108,3 +108,30 @@ modules.exports = {
   ]
 }
 ```
+
+### 分析打包后的文件
+
+分析打包后文件的组成有助于优化包体大小，有时候还能用于 `Debug` 一些问题。
+`Vite` 打包主要依赖 `rollup` ，所以这里使用 `rollup-plugin-visualizer` 来分析依赖占据的大小并提供可细化报告。
+
+
+```js
+import { defineConfig } from 'vite';
+import { visualizer } from 'rollup-plugin-visualizer';
+
+const NPM_COMMAND = process.env.npm_lifecycle_event;
+
+// https://vitejs.dev/config
+export default defineConfig({
+  build: {
+    // ...other options
+    rollupOptions: {
+      plugins: [
+        NPM_COMMAND === 'report' ? visualizer({ filename: 'states-xxx.html' }) : null,
+      ].filter(Boolean),
+    },
+  }
+});
+```
+
+设置后，使用 `npm run report` 执行可以执行 `electron-forge package` 并生成 `states-xxx.html` 报告。
