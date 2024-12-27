@@ -991,6 +991,11 @@ cross-zip@^4.0.0:
   resolved "https://registry.npmmirror.com/cross-zip/-/cross-zip-4.0.1.tgz"
   integrity sha512-n63i0lZ0rvQ6FXiGQ+/JFCKAUyPFhLQYJIqKaa+tSJtfKeULF/IDNDAbdnSIxgS4NTuw2b0+lj8LzfITuq+ZxQ==
 
+dayjs@^1.11.13:
+  version "1.11.13"
+  resolved "https://registry.npmmirror.com/dayjs/-/dayjs-1.11.13.tgz"
+  integrity sha512-oaMBel6gjolK862uaPQOVTA7q3TZhuSvuMQAAglQDOWYO9A91IrAOUJEyKVlqJlHE0vq5p5UXxzdPfMH/x6xNg==
+
 debug@^2.2.0:
   version "2.6.9"
   resolved "https://registry.npmmirror.com/debug/-/debug-2.6.9.tgz"
@@ -1144,6 +1149,11 @@ electron-installer-redhat@^3.2.0:
     lodash "^4.17.15"
     word-wrap "^1.2.3"
     yargs "^16.0.2"
+
+electron-log@^5.2.4:
+  version "5.2.4"
+  resolved "https://registry.npmmirror.com/electron-log/-/electron-log-5.2.4.tgz"
+  integrity sha512-iX12WXc5XAaKeHg2QpiFjVwL+S1NVHPFd3V5RXtCmKhpAzXsVQnR3UEc0LovM6p6NkUQxDWnkdkaam9FNUVmCA==
 
 electron-squirrel-startup@^1.0.1:
   version "1.0.1"

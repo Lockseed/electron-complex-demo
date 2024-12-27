@@ -12,9 +12,9 @@ export default defineConfig({
     target: 'esnext',
     rollupOptions: {
       output: {
-        format: 'es',
-        entryFileNames: '[name].mjs',
-        chunkFileNames: '[name].mjs',
+        format: 'cjs',
+        entryFileNames: '[name].cjs',
+        chunkFileNames: '[name].cjs',
       },
       plugins: [
         NPM_COMMAND === 'report' ? visualizer({ filename: 'states-preload.html' }) : null,

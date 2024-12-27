@@ -1,5 +1,17 @@
-import { app, BrowserWindow } from 'electron';
 import path from 'node:path';
+import { app, BrowserWindow } from 'electron';
+import isDev from './isDev.js';
+import logger, { initLogger } from './logger.js';
+import setPaths from './setPaths.js';
+import ensureSingleInstance from './ensureSingleInstance.js';
+import { setupDeepLink } from './deepLink.js';
+
+// 根据应用名称和当前环境等，设置应用的数据目录
+setPaths({ isDev });
+
+// 初始化日志
+initLogger();
+logger.info("APP_START");
 
 const started = (await import('electron-squirrel-startup')).default;
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -7,13 +19,19 @@ if (started) {
   app.quit();
 }
 
+// 确保单一实例 防止重复启动
+ensureSingleInstance();
+
+// 将当前 App 设置为指定 protocol 的默认客户端
+setupDeepLink();
+
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
     webPreferences: {
-      preload: path.join(import.meta.dirname, 'preload.mjs'),
+      preload: path.join(import.meta.dirname, 'preload.cjs'),
     },
   });
 
@@ -34,7 +52,7 @@ const createSecondaryWindow = () => {
     width: 400,
     height: 300,
     webPreferences: {
-      preload: path.join(import.meta.dirname, 'preload.mjs'),
+      preload: path.join(import.meta.dirname, 'preload.cjs'),
     },
   });
 
@@ -52,17 +70,18 @@ const createSecondaryWindow = () => {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.whenReady().then(() => {
-  createWindow();
-  createSecondaryWindow();
+app.whenReady()
+  .then(() => { logger.info("APP_READY"); })
+  .then(createWindow)
+  .then(createSecondaryWindow)
+  .catch(e => console.error(e))
 
-  // On OS X it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
-  app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) {
-      createWindow();
-    }
-  });
+// On OS X it's common to re-create a window in the app when the
+// dock icon is clicked and there are no other windows open.
+app.on('activate', () => {
+  if (BrowserWindow.getAllWindows().length === 0) {
+    createWindow();
+  }
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common

@@ -27,7 +27,11 @@
 
 同理 `format` 设置为 `['es']` 就好，无需考虑 `commonjs` 和 `umd` 的问题。
 
-打包后文件的后缀名需要注意一下，一般情况下如果 `package.json` 中已经设置了 `type: module` 其实只需要将后缀名设为 `.js` 即可（`.mjs` 也行），但是 `preload` 会自动忽略 `package.json` 中的设置，所以必须将后缀名明确写为 `.mjs` 。
+打包后文件的后缀名需要注意一下，一般情况下如果 `package.json` 中已经设置了 `type: module` 其实只需要将后缀名设为 `.js` 即可（`.mjs` 也行）。
+
+~~但是 `preload` 会自动忽略 `package.json` 中的设置，所以必须将后缀名明确写为 `.mjs` 。~~
+
+由于部分依赖需要，暂时保持 `preload` 为 `CommonJS`。
 
 关于代码中的修改：
 
