@@ -235,7 +235,7 @@ const trim = (str) => str.trim ?
  * @param {Object|Array} obj The object to iterate
  * @param {Function} fn The callback to invoke for each item
  *
- * @param {Boolean} [allOwnKeys = false]
+ * @param {Object} [options = {allOwnKeys = false}]
  * @returns {any}
  */
 function forEach(obj, fn, {allOwnKeys = false} = {}) {
@@ -307,7 +307,6 @@ const isContextDefined = (context) => !isUndefined(context) && context !== _glob
  * console.log(result.foo); // outputs 456
  * ```
  *
- * @param {Object} obj1 Object to merge
  *
  * @returns {Object} Result of all merge properties
  */
@@ -340,7 +339,7 @@ function merge(/* obj1, obj2, obj3, ... */) {
  * @param {Object} b The object to copy properties from
  * @param {Object} thisArg The object to bind function to
  *
- * @param {Boolean} [allOwnKeys]
+ * @param {Object} [options = {allOwnKeys = false}]
  * @returns {Object} The resulting value of object a
  */
 const extend = (a, b, thisArg, {allOwnKeys}= {}) => {
@@ -387,11 +386,18 @@ const inherits = (constructor, superConstructor, props, descriptors) => {
 }
 
 /**
+ * @callback toFlatObjectFilter
+ * @param {Object} sourceObj
+ * @param {Object} destObj
+ * @returns {boolean}
+ */
+
+/**
  * Resolve object with deep prototype chain to a flat object
  * @param {Object} sourceObj source object
  * @param {Object} [destObj]
- * @param {Function|Boolean} [filter]
- * @param {Function} [propFilter]
+ * @param {toFlatObjectFilter|boolean} [filter]
+ * @param {function} [propFilter]
  *
  * @returns {Object}
  */
@@ -416,7 +422,7 @@ const toFlatObject = (sourceObj, destObj, filter, propFilter) => {
       }
     }
     sourceObj = filter !== false && getPrototypeOf(sourceObj);
-  } while (sourceObj && (!filter || filter(sourceObj, destObj)) && sourceObj !== Object.prototype);
+  } while (sourceObj && (!filter || (typeof filter === 'function' && filter(sourceObj, destObj))) && sourceObj !== Object.prototype);
 
   return destObj;
 }
@@ -464,7 +470,7 @@ const toArray = (thing) => {
  * Checking if the Uint8Array exists and if it does, it returns a function that checks if the
  * thing passed in is an instance of Uint8Array
  *
- * @param {TypedArray}
+ * @param {Uint8ArrayConstructor} obj
  *
  * @returns {Array}
  */
@@ -500,10 +506,10 @@ const forEachEntry = (obj, fn) => {
 /**
  * It takes a regular expression and a string, and returns an array of all the matches
  *
- * @param {string} regExp - The regular expression to match against.
+ * @param {RegExp} regExp - The regular expression to match against.
  * @param {string} str - The string to search.
  *
- * @returns {Array<boolean>}
+ * @returns {RegExpExecArray[]}
  */
 const matchAll = (regExp, str) => {
   let matches;
@@ -541,7 +547,7 @@ const isRegExp = kindOfTest('RegExp');
 
 const reduceDescriptors = (obj, reducer) => {
   const descriptors = Object.getOwnPropertyDescriptors(obj);
-  const reducedDescriptors = {};
+  const /**@type {PropertyDescriptorMap & ThisType<any>} */ reducedDescriptors = {};
 
   forEach(descriptors, (descriptor, name) => {
     let ret;
@@ -627,7 +633,8 @@ const generateString = (size = 16, alphabet = ALPHABET.ALPHA_DIGIT) => {
 /**
  * If the thing is a FormData object, return true, otherwise return false.
  *
- * @param {unknown} thing - The thing to check.
+ * @param {Object} thing - The thing to check.
+ * @param {any} [thing.append] - The thing to check.
  *
  * @returns {boolean}
  */
@@ -681,6 +688,7 @@ const _setImmediate = ((setImmediateSupported, postMessageSupported) => {
 
   return postMessageSupported ? ((token, callbacks) => {
     _global.addEventListener("message", ({source, data}) => {
+      // @ts-ignore
       if (source === _global && data === token) {
         callbacks.length && callbacks.shift()();
       }

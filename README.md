@@ -2,6 +2,7 @@
 
 - [] 使用 Electron-forge 创建一个 Electron.js 项目，并负责软件打包（packaging）。
 - [] 使用 vite 负责对代码的打包（Bundling）
+- [] 引入类型检测，辅助 IDE 判断，提升编程效率，减少错误。
 - [] 根据 Electron 官方建议，构建一个沙盒化的应用。
 - [] 实现 Electron 所有进程的代码均可调试（Debug）。
 - [] 构建一套跨进程调用方法、监听事件的能力。
