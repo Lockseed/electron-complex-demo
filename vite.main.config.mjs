@@ -16,7 +16,6 @@ export default defineConfig({
       formats: ['es']
     },
     rollupOptions: {
-      external: ['electron-squirrel-startup'],
       plugins: [
         NPM_COMMAND === 'report' ? visualizer({ filename: 'states-main.html' }) : null,
       ].filter(Boolean),

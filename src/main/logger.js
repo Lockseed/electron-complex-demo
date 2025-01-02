@@ -1,6 +1,8 @@
 import { join } from "node:path";
 import log from "electron-log";
 import dayjs from "dayjs";
+import isDev from "./isDev.js";
+import registerBeforeQuitTask from "./beforeQuitTasks.js";
 
 export default log.scope("main");
 
@@ -16,12 +18,16 @@ export function initLogger() {
     preload: false,
   });
   
-  log.transports.file.level = 'info';
+  log.transports.file.level = isDev ? "debug" : "info";
   log.transports.file.maxSize = 0;
   log.transports.file.resolvePathFn = (variables) => {
     const filename = `${dayjs().format("YYYY-MM-DD")}.log`;
     return join(variables.electronDefaultDir, filename);
   };
+
+  registerBeforeQuitTask(() => {
+    log.transports.file.level = false;
+  });
 
   console.log("[initLogger] Logger initialized ", log.transports.file.getFile().path);
 }
