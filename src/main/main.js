@@ -1,20 +1,25 @@
-import path from 'node:path';
-import { app, BrowserWindow } from 'electron';
+import { app } from 'electron';
 import started from 'electron-squirrel-startup';
 import isDev from './isDev.js';
 import logger, { initLogger } from './logger.js';
 import setPaths from './setPaths.js';
 import ensureSingleInstance from './ensureSingleInstance.js';
+import { captureUnhandledRejection } from './unhandled.js';
 import { setupDeepLink } from './deepLink.js';
+import { setWindowOpenHandler } from './windowOpenHandler.js';
 import { registerProtocolHandler } from './protocol.js';
 import { registerAPIHandlers } from "./handlers.js";
 import { registerRemoteEvents } from './events.js';
-import { showMainWindow } from "./windowManager";
+import { initI18n } from './i18n/index.js';
+import { initGlobalStore } from './store/index.js';
+import { showMainWindow } from "./windowManager/index.js";
+import { setupApplicationMenu } from './menu.js';
 
 // 根据应用名称和当前环境等，设置应用的数据目录
+// 这一类操作对后续影响很大，必须优先完成
 setPaths({ isDev });
 
-// 初始化日志
+// 初始化日志 相对优先级较高
 initLogger();
 logger.info("APP_START");
 
@@ -29,67 +34,28 @@ ensureSingleInstance();
 // 将当前 App 设置为指定 protocol 的默认客户端
 setupDeepLink();
 
-// const createWindow = () => {
-//   // Create the browser window.
-//   const mainWindow = new BrowserWindow({
-//     width: 800,
-//     height: 600,
-//     webPreferences: {
-//       preload: path.join(import.meta.dirname, 'preload.cjs'),
-//     },
-//   });
-
-//   // and load the index.html of the app.
-//   if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
-//     mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL);
-//   } else {
-//     mainWindow.loadFile(path.join(import.meta.dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`));
-//   }
-
-//   // Open the DevTools.
-//   mainWindow.webContents.openDevTools();
-// };
-
-const createSecondaryWindow = () => {
-  // Create the browser window.
-  const secondaryWindow = new BrowserWindow({
-    width: 400,
-    height: 300,
-    webPreferences: {
-      preload: path.join(import.meta.dirname, 'preload.cjs'),
-    },
-  });
-
-  // and load the index.html of the app.
-  if (SECONDARY_WINDOW_VITE_DEV_SERVER_URL) {
-    secondaryWindow.loadURL(SECONDARY_WINDOW_VITE_DEV_SERVER_URL);
-  } else {
-    secondaryWindow.loadFile(path.join(import.meta.dirname, `../renderer/${SECONDARY_WINDOW_VITE_NAME}/index.html`));
-  }
-
-  // Open the DevTools.
-  secondaryWindow.webContents.openDevTools();
-};
-
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady()
   .then(() => { logger.info("APP_READY"); })
+  .then(() => initI18n("zh-CN"))
+  .then(captureUnhandledRejection)
   .then(registerProtocolHandler)
   .then(registerAPIHandlers)
   .then(registerRemoteEvents)
+  .then(initGlobalStore)
   .then(showMainWindow)
-  .then(createSecondaryWindow)
-  .catch(e => console.error(e))
+  .then(setupApplicationMenu)
+  .catch(e => logger.error("APP_INIT_ERROR", e));
 
-// On OS X it's common to re-create a window in the app when the
-// dock icon is clicked and there are no other windows open.
+
 app.on('activate', () => {
   logger.info("APP_ACTIVATE");
-  if (BrowserWindow.getAllWindows().length === 0) {
-    showMainWindow();
-  }
+  // 一般情况下这里会判断如果当前没有窗口了，则重新创建住窗口
+  // 但是在这里由于软件运行期间，我们的主窗口只会被隐藏或最小化
+  // 所以当应用重新 activate 时，直接把主窗口 show 就来就好
+  showMainWindow();
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common
@@ -101,5 +67,12 @@ app.on('window-all-closed', () => {
   }
 });
 
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and import them here.
+/**
+ * 用于处理新窗口打开事件
+ * 一般情况下不允许直接使用原生逻辑打开新窗口
+ */
+app.on('web-contents-created', (_, contents) => {
+  setWindowOpenHandler(contents);
+});
+
+// TODO 处理一些 App 层级和 process 层级抛出来的错误

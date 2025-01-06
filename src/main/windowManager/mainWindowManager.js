@@ -2,12 +2,15 @@ import { EventEmitter } from 'node:events';
 import path from 'node:path';
 import { BrowserWindow } from 'electron';
 
-import logger from '../logger';
-import isDev from '../isDev';
-import { isWindows, isMacOS } from '../utils';
-import { showWindow, hideWindow } from './windowHelpers';
-import { getMainProcessAPIMap } from '../handlers';
-import { getMainProcessEventMap } from '../events';
+import logger from '../logger.js';
+import isDev from '../isDev.js';
+import { appIsQuitting } from '../beforeQuitTasks.js';
+// import { isWindows, isMacOS } from '../utils';
+import { showWindow, hideWindow } from './windowHelpers.js';
+import WindowStateManager from './WindowStateManager.js';
+import { getMainWindowState, setMainWindowState } from "../store/index.js";
+import { getMainProcessAPIMap } from '../handlers.js';
+import { getMainProcessEventMap } from '../events.js';
 
 export const mainWindowEventBus = new EventEmitter();
 
@@ -27,15 +30,24 @@ function createMainWindow() {
   mainWindowCreated = resolvers.promise;
   resolveMainWindowCreate = resolvers.resolve;
 
+  const defaultState = { width: 800, height: 600, x: 20, y: 20 };
+  const windowState = new WindowStateManager({
+    saveState: (state) => setMainWindowState(state),
+    loadState: () => getMainWindowState(defaultState),
+    defaultState,
+  });
+
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    titleBarStyle: isMacOS ? 'hiddenInset' : isWindows ? 'hidden' : 'default',
-    width: 800,
-    height: 600,
+    // titleBarStyle: isMacOS ? 'hiddenInset' : isWindows ? 'hidden' : 'default',
+    width: windowState.width,
+    height: windowState.height,
     minWidth: 400,
     minHeight: 300,
-    visualEffectState: 'active',
-    vibrancy: 'under-window',
+    x: windowState.x,
+    y: windowState.y,
+    // visualEffectState: 'active',
+    // vibrancy: 'under-window',
     show: false,
     webPreferences: {
       sandbox: true,
@@ -47,6 +59,9 @@ function createMainWindow() {
     },
   });
 
+  // 记录主窗口大小位置变化
+  windowState.manage(mainWindow);
+  // 绑定事件
   _bindEvents(mainWindow);
 
   // and load the index.html of the app.
@@ -84,16 +99,17 @@ export async function ensureMainWindow() {
     createMainWindow();
   }
 
-
   return mainWindowCreated;
 }
 
 export async function showMainWindow() {
+  logger.debug('[mainWindow] showMainWindow');
   const win = await ensureMainWindow();
   return showWindow(win);
 }
 
 export async function hideMainWindow() {
+  logger.debug('[mainWindow] hideMainWindow');
   const win = await ensureMainWindow();
   return hideWindow(win);
 }
@@ -105,13 +121,16 @@ export async function hideMainWindow() {
 function _bindEvents(win) {
   win.on('ready-to-show', () => {
     logger.info('Main window ready to show');
-    showWindow(win);
+    showMainWindow();
   });
 
-  // win.on('close', (event) => {
-  //   event.preventDefault();
-  //   hideWindow(win);
-  // });
+  win.on('close', (event) => {
+    if (!appIsQuitting) {
+      event.preventDefault();
+      // TODO: mac 执行隐藏 ，windows 执行最小化
+      hideMainWindow();
+    }
+  });
 }
 
 function getAdditionalArguments() {

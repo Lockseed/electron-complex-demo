@@ -1,2 +1,2 @@
-import log from "electron-log/renderer.js";
+import log from "electron-log/renderer";
 export default log.scope("renderer");

@@ -2,9 +2,10 @@
   "compilerOptions": {
     "checkJs": true,
     "resolveJsonModule": true,
-    "moduleResolution": "node",
+    "moduleResolution": "node16",
+    "moduleDetection": "force",
     "target": "esnext",
-    "module": "esnext",
+    "module": "NodeNext",
     "paths": {
       "@/*": ["./src/*"]
     },

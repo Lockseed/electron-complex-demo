@@ -2,7 +2,7 @@ import { join } from "node:path";
 import log from "electron-log";
 import dayjs from "dayjs";
 import isDev from "./isDev.js";
-import registerBeforeQuitTask from "./beforeQuitTasks.js";
+import { registerBeforeQuitTask } from "./beforeQuitTasks.js";
 
 export default log.scope("main");
 
@@ -24,6 +24,9 @@ export function initLogger() {
     const filename = `${dayjs().format("YYYY-MM-DD")}.log`;
     return join(variables.electronDefaultDir, filename);
   };
+
+  // 主进程日志无需发送到渲染进程
+  log.transports.ipc.level = false;
 
   registerBeforeQuitTask(() => {
     log.transports.file.level = false;

@@ -1,0 +1,25 @@
+{
+  "appMenu": {
+    "about": "关于 {{appName}}",
+    "preferences": "偏好设置...",
+    "services": "服务",
+    "quit": "退出 {{appName}}",
+    "file": "文件",
+    "edit": "编辑",
+    "undo": "撤销",
+    "redo": "重做",
+    "cut": "剪切",
+    "copy": "复制",
+    "paste": "粘贴",
+    "selectAll": "全选",
+    "view": "视图",
+    "window": "窗口",
+    "debug": "调试",
+    "reload": "重新加载",
+    "forceReload": "强制重新加载",
+    "toggleDevTools": "显示/隐藏 开发者工具",
+    "openGlobalStore": "在编辑器中打开全局存储文件",
+    "help": "帮助",
+    "openRepo": "打开仓库"
+  }
+}
