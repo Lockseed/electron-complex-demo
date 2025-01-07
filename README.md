@@ -140,3 +140,13 @@ export default defineConfig({
 ```
 
 设置后，使用 `npm run report` 执行可以执行 `electron-forge package` 并生成 `states-xxx.html` 报告。
+
+### 主进程代码相关 jsconfig.json 的配置
+
+- `checkJs` 是否对 js 文件开启类型检查。
+- `module` 控制 **输出的模块系统类型**。设为 `NodeNext`，Node.js 16+ 的模块系统，支持 ESM 和 CommonJS 并结合 package.json 中的 type 字段解析。
+- `moduleResolution` 控制 **模块解析行为**。 设为 `Node16`，严格遵循 ESM 和 CommonJS 的新解析规范（需要明确路径和扩展名）。
+- `module` 和 `moduleResolution` 两个字段的设置会影响诸如：
+  - 引入某些第三方库时能否正常进行类型推导 例如 `electron-store`。
+  - 引入本地模块，例如 `import foo from './foo'` 时是否能自动解析到 `'./foo/index.js'`。
+  - 引入 json 文件是否需要明确标注 `import someJson from './someJson.json' assert { type: "json" };`。
