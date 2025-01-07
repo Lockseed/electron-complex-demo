@@ -1,8 +1,8 @@
 import { app } from "electron";
 
-import { IPC_EVENT_CHANNEL_NAME } from "@/common/constants";
+import { IPC_EVENT_CHANNEL_NAME } from "@/common/constants.js";
 import { registerBeforeQuitTask } from "./beforeQuitTasks.js";
-import { sendToAllWindows } from "./windowManager";
+import { sendToAllWindows } from "./windowManager/index.js";
 
 const appEvents = {
   onAppActivate(cb) {

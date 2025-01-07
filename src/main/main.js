@@ -6,7 +6,6 @@ import setPaths from './setPaths.js';
 import ensureSingleInstance from './ensureSingleInstance.js';
 import { captureUnhandledRejection } from './unhandled.js';
 import { setupDeepLink } from './deepLink.js';
-import { setWindowOpenHandler } from './windowOpenHandler.js';
 import { registerProtocolHandler } from './protocol.js';
 import { registerAPIHandlers } from "./handlers.js";
 import { registerRemoteEvents } from './events.js';
@@ -31,6 +30,12 @@ if (started) {
 // 确保单一实例 防止重复启动
 ensureSingleInstance();
 
+// 初始化 i18n
+await initI18n("zh-CN");
+
+// 捕获全局未处理的 rejection
+captureUnhandledRejection();
+
 // 将当前 App 设置为指定 protocol 的默认客户端
 setupDeepLink();
 
@@ -39,8 +44,8 @@ setupDeepLink();
 // Some APIs can only be used after this event occurs.
 app.whenReady()
   .then(() => { logger.info("APP_READY"); })
-  .then(() => initI18n("zh-CN"))
-  .then(captureUnhandledRejection)
+  // .then(() => initI18n("zh-CN"))
+  // .then(captureUnhandledRejection)
   .then(registerProtocolHandler)
   .then(registerAPIHandlers)
   .then(registerRemoteEvents)
@@ -66,13 +71,3 @@ app.on('window-all-closed', () => {
     app.quit();
   }
 });
-
-/**
- * 用于处理新窗口打开事件
- * 一般情况下不允许直接使用原生逻辑打开新窗口
- */
-app.on('web-contents-created', (_, contents) => {
-  setWindowOpenHandler(contents);
-});
-
-// TODO 处理一些 App 层级和 process 层级抛出来的错误

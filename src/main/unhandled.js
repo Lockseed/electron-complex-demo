@@ -1,28 +1,67 @@
 import process from "node:process";
 import { app, dialog, clipboard } from "electron";
+import { t } from "i18next";
+
+import logger from "./logger.js";
+import { anyToString } from "@/common/utils.js";
+import { toLogFormat } from "@/common/errors.js";
 
 let installed = false;
 
 /**
- * @callback
  * @param {string} title 
- * @param {Error|any} err 
+ * @param {Error} err 
  */
 function handleError(title, err) {
-  console.error(err);
-  // TODO 打日志 弹出对话框 ...
+  const formattedError = toLogFormat(err);
+  logger.error(`${title}: ${formattedError}`);
+
+  if (app.isReady()) {
+    const buttonIdx = dialog.showMessageBoxSync({
+      type: 'error',
+      message: title,
+      detail: formattedError,
+      buttons: [t('appDialog.quit'), t('appDialog.copyAndQuit')],
+      noLink: true,
+    });
+
+    if (buttonIdx === 1) {
+      clipboard.writeText(`${title}\n${formattedError}`);
+    }
+  } else {
+    dialog.showErrorBox(title, formattedError);
+  }
+
+  app.exit(1);
 }
 
+/**
+ * 将任意类型的 rejection value 转换为 Error 对象
+ * @param {unknown} reason 
+ * @returns {Error}
+ */
+function _toError(reason) {
+  if (reason instanceof Error) {
+    return reason;
+  }
+
+  return new Error(`Promise rejected non-error value: ${anyToString(reason)}`);
+}
+
+/**
+ * 负责对全局报错进行兜底
+ * @returns {void}
+ */
 export function captureUnhandledRejection() {
   if (installed) {
     return;
   }
 
   process.on('uncaughtException', (error) => {
-    handleError('Uncaught Exception', error);
+    handleError('Uncaught Exception', _toError(error));
   });
   process.on('unhandledRejection', (reason) => {
-    handleError('Unhandled Rejection', reason);
+    handleError('Unhandled Rejection', _toError(reason));
   });
 
   installed = true;

@@ -1,3 +1,6 @@
+import logger from "../logger.js";
+import handleUrl from "../handleUrl.js";
+import { toLogFormat } from "@/common/errors.js";
 
 /**
  * 
@@ -52,4 +55,28 @@ export function hideWindow(win) {
     win.hide();
   }
 
+}
+
+/**
+ * 进行一些一般业务窗口创建后的统一处理
+ * 例如组织跳转和导航的默认行为，等
+ * @param {Electron.BrowserWindow} window 
+ * @param {string} windowName 
+ */
+export function handleWindowCreated(window, windowName) {
+  window.webContents.on("will-navigate", (event, url) => {
+    event.preventDefault();
+
+    handleUrl(url).catch((_) => {});
+  });
+
+  window.webContents.setWindowOpenHandler(({ url }) => {
+    handleUrl(url).catch((_) => {});
+
+    return { action: "deny" }
+  });
+
+  window.webContents.on("preload-error", (_, preloadPath, error) => {
+    logger.error(`${windowName} preload error in ${preloadPath}`, toLogFormat(error));
+  });
 }

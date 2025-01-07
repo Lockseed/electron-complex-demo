@@ -21,5 +21,9 @@
     "openGlobalStore": "在编辑器中打开全局存储文件",
     "help": "帮助",
     "openRepo": "打开仓库"
+  },
+  "appDialog": {
+    "quit": "退出",
+    "copyAndQuit": "复制并退出"
   }
 }

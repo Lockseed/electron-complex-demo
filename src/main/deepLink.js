@@ -1,7 +1,7 @@
 import path from "node:path";
 import { app } from "electron";
-import isDev from "./isDev";
-import logger from "./logger";
+import isDev from "./isDev.js";
+import logger from "./logger.js";
 
 let protocol = isDev ? 'electron-demo-dev' : 'electron-demo';
 

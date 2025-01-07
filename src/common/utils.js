@@ -717,6 +717,40 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+/**
+ * 
+ * @param {*} thing 
+ * @return {string}
+ */
+function anyToString(thing) {
+  let /** @type {string} */ result;
+  if (typeof thing === 'string') {
+    return thing;
+  } else if (thing === null || thing === undefined) {
+    return `${thing}`;
+  }
+
+  try {
+    result = JSON.stringify(thing);
+  } catch (_) {
+    result = undefined;
+  }
+
+  if (typeof result === "string") return result;
+
+  if (typeof thing.toString === 'function') {
+    try {
+      result = thing.toString();
+    } catch (_) {
+      result = undefined;
+    }
+  }
+
+  if (typeof result === "string") return result;
+
+  return Object.prototype.toString.call(thing);
+}
+
 // *********************
 
 export {
@@ -777,5 +811,6 @@ export {
   isThenable,
   _setImmediate as setImmediate,
   asap,
-  sleep
+  sleep,
+  anyToString
 };

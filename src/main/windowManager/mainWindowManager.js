@@ -6,7 +6,7 @@ import logger from '../logger.js';
 import isDev from '../isDev.js';
 import { appIsQuitting } from '../beforeQuitTasks.js';
 // import { isWindows, isMacOS } from '../utils';
-import { showWindow, hideWindow } from './windowHelpers.js';
+import { showWindow, hideWindow, handleWindowCreated } from './windowHelpers.js';
 import WindowStateManager from './WindowStateManager.js';
 import { getMainWindowState, setMainWindowState } from "../store/index.js";
 import { getMainProcessAPIMap } from '../handlers.js';
@@ -61,9 +61,12 @@ function createMainWindow() {
 
   // 记录主窗口大小位置变化
   windowState.manage(mainWindow);
+  // 一些窗口创建后的通用处理逻辑
+  handleWindowCreated(mainWindow, "MainWindow");
   // 绑定事件
   _bindEvents(mainWindow);
 
+  console.log("process.env " + JSON.stringify(process.env));
   // and load the index.html of the app.
   if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
     mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL);
