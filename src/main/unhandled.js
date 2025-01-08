@@ -64,5 +64,20 @@ export function captureUnhandledRejection() {
     handleError('Unhandled Rejection', _toError(reason));
   });
 
+  app.on("render-process-gone", (_, contents, { reason, exitCode }) => {
+    if (reason === "clean-exit") {
+      return;
+    }
+
+    let url = "[UNKNOWN]";
+    try {
+      url = contents.getURL();
+    } catch (_) {
+      // ignore
+    }
+
+    handleError("Render Process Gone", new Error(`Reason: ${reason}, Exit Code: ${exitCode}, URL: ${url}`));
+  });
+
   installed = true;
 }
