@@ -150,3 +150,28 @@ export default defineConfig({
   - 引入某些第三方库时能否正常进行类型推导 例如 `electron-store`。
   - 引入本地模块，例如 `import foo from './foo'` 时是否能自动解析到 `'./foo/index.js'`。
   - 引入 json 文件是否需要明确标注 `import someJson from './someJson.json' assert { type: "json" };`。
+
+
+### 关于类型定义的技巧
+
+#### 定义函数的属性 call-signature
+
+javascript 中的函数是可以有能调用的属性，函数类型表达式语法不允许声明属性。如果我们想用属性来描述可调用的东西，我们可以在对象类型中编写调用签名（call signature）：
+
+```ts
+type DescribableFunction = {
+  description: string;
+  (someArg: number): boolean;
+};
+```
+
+这个写法在使用 jsDoc 的时候也很有用
+
+```js
+/**
+ * @typedef {{
+ *   description: string,
+ *   (someArg: number): boolean
+ * }} DescribableFunction
+ */
+```
