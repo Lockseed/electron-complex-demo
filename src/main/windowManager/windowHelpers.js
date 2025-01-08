@@ -1,6 +1,7 @@
 import logger from "../logger.js";
 import handleUrl from "../handleUrl.js";
 import { toLogFormat } from "@/common/errors.js";
+import { tryParseUrl } from "../utils.js";
 
 /**
  * 
@@ -57,6 +58,27 @@ export function hideWindow(win) {
 
 }
 
+export function isInternalUrl(url) {
+  if (!url || typeof url !== "string") {
+    return false;
+  }
+  const parsedUrl = tryParseUrl(url);
+  if (!parsedUrl) {
+    return false;
+  }
+
+  const { protocol, hostname } = parsedUrl;
+
+  // 开发模式的 HMR 无需特殊处理
+  if (protocol === "http:" || protocol === "https:") {
+    if (hostname === "localhost") {
+      return true;
+    }
+  }
+
+  return false;
+}
+
 /**
  * 进行一些一般业务窗口创建后的统一处理
  * 例如组织跳转和导航的默认行为，等
@@ -65,18 +87,24 @@ export function hideWindow(win) {
  */
 export function handleWindowCreated(window, windowName) {
   window.webContents.on("will-navigate", (event, url) => {
-    event.preventDefault();
+    logger.debug(`[willNavigate][${windowName}] url: ${url}`);
 
+    if (isInternalUrl(url)) {
+      return;
+    }
+
+    event.preventDefault();
     handleUrl(url).catch((_) => {});
   });
 
-  window.webContents.setWindowOpenHandler(({ url }) => {
-    handleUrl(url).catch((_) => {});
+  window.webContents.setWindowOpenHandler(({ url, disposition }) => {
+    logger.debug(`[windowOpenHandler][${windowName}] url: ${url}, disposition: ${disposition}`);
 
+    handleUrl(url).catch((_) => {});
     return { action: "deny" }
   });
 
   window.webContents.on("preload-error", (_, preloadPath, error) => {
-    logger.error(`${windowName} preload error in ${preloadPath}`, toLogFormat(error));
+    logger.error(`[preloadError][${windowName}] preload error in ${preloadPath}`, toLogFormat(error));
   });
 }
