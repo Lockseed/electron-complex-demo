@@ -2,22 +2,18 @@ import { EventEmitter } from "node:events";
 import { ipcRenderer } from "electron";
 
 import { IPC_EVENT_CHANNEL_NAME } from "@/common/constants.js";
-import { isPlainObject } from "@/common/utils";
 
 function genMainProcessEvents() {
   console.log("[genMainProcessEvents] Generating main process events...");
-  const eventMap = {
-    // namespaceA: [eventA1, eventA2, ...]
-    // namespaceB: [eventB1, eventB2, ...]
-    appEvents: ['onAppActivate'],
-  };
+
+  const /** @type {[string, string[]][]|null} */ eventMap = (() => {
+    console.log("[genMainProcessAPIs] process.argv: ", process.argv);
+    const key = "--main-process-event-map";
+    const arg = process.argv.find(arg => arg.startsWith(key));
+    return arg ? JSON.parse(arg.split("=")[1]) : null;
+  })();
 
   console.log("[genMainProcessEvents] Event map: ", eventMap);
-  // check map
-  if (!isPlainObject(eventMap)) {
-    console.error("[genMainProcessEvents] Invalid eventMap.");
-    return {};
-  }
 
   const eventEmitter = new EventEmitter();
 
@@ -39,8 +35,7 @@ function genMainProcessEvents() {
   });
 
   // 生成事件注册函数
-  const eventEntries = Object.entries(eventMap);
-  const namespaceEventRegisterMapPairs = eventEntries.map(([namespace, eventNames]) => {
+  const namespaceEventRegisterMapPairs = eventMap.map(([namespace, eventNames]) => {
     // [event1, event2, ...] => [[event1, registerFunction1], [event2, registerFunction2], ...]
     const eventRegisterPair = eventNames.map((eventName) => {
       const channel = `${namespace}::${eventName}`;

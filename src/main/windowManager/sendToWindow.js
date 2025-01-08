@@ -1,6 +1,6 @@
 import { BrowserWindow, WebContentsView } from "electron";
 
-import logger from "../logger";
+import logger from "../logger.js";
 import * as helpers from "./windowHelpers.js";
 
 /**

@@ -19,6 +19,8 @@
     "forceReload": "Force Reload",
     "toggleDevTools": "Toggle Developer Tools",
     "openGlobalStore": "Open Global Store In Editor",
+    "triggerRendererProcessCrash": "Trigger Renderer Process Crash",
+    "triggerRendererProcessOom": "Trigger Renderer Process OOM",
     "help": "Help",
     "openRepo": "Open Repository"
   },

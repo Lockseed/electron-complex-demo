@@ -1,13 +1,11 @@
 import { ipcRenderer } from "electron";
 
 import { IPC_API_CHANNEL_NAME } from "@/common/constants.js";
-import { isPlainObject } from "@/common/utils";
 
 
 function genMainProcessAPIs() {
   console.log("[genMainProcessAPIs] Generating main process APIs...");
 
-  // Just for test, this should be fetched from main process
   const /** @type {[string, string[]][]|null} */ apiMap = (() => {
     console.log("[genMainProcessAPIs] process.argv: ", process.argv);
     const key = "--main-process-api-map";
@@ -24,7 +22,6 @@ function genMainProcessAPIs() {
   }
 
   // 为了方便后续处理将数据对象展开为数组
-  // //[[namespaceA, [handlerA1, handlerA2]], [namespaceB, [handlerB1, handlerB2]]]
   const namespaceHandlerObjectPairs = apiMap.map(([namespace, handlerNames]) => {
     // check handler names
     if (!Array.isArray(handlerNames)) {

@@ -19,6 +19,8 @@
     "forceReload": "强制重新加载",
     "toggleDevTools": "显示/隐藏 开发者工具",
     "openGlobalStore": "在编辑器中打开全局存储文件",
+    "triggerRendererProcessCrash": "触发渲染进程崩溃",
+    "triggerRendererProcessOom": "触发渲染进程OOM",
     "help": "帮助",
     "openRepo": "打开仓库"
   },

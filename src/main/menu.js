@@ -4,6 +4,7 @@ import { isMacOS } from "./utils.js";
 import logger from "./logger.js";
 import isDev from "./isDev.js";
 import { openGlobalStoreFile } from "./store/global.js";
+import { triggerRendererProcessGone } from "./debug/index.js";
 
 export function setupApplicationMenu() {
   function buildApplicationMenu() {
@@ -47,6 +48,15 @@ export function setupApplicationMenu() {
             label: t('appMenu.openGlobalStore'), 
             click: () => openGlobalStoreFile().catch(e => logger.error(e)) 
           },
+          { type: 'separator' },
+          {
+            label: t('appMenu.triggerRendererProcessCrash'),
+            click: () => triggerRendererProcessGone("crash")
+          },
+          {
+            label: t('appMenu.triggerRendererProcessOom'),
+            click: () => triggerRendererProcessGone("oom")
+          }
         ]
       });
     }

@@ -3,6 +3,7 @@ import { app } from "electron";
 import { IPC_EVENT_CHANNEL_NAME } from "@/common/constants.js";
 import { registerBeforeQuitTask } from "./beforeQuitTasks.js";
 import { sendToAllWindows } from "./windowManager/index.js";
+import { events as debugEvents } from "./debug/index.js";
 
 const appEvents = {
   onAppActivate(cb) {
@@ -14,9 +15,22 @@ const appEvents = {
   }
 }
 
+/**
+ * @typedef {{
+*   (cb: (...args: any[]) => void): () => void;
+*   sendEvent?: (...args: any[]) => void;
+* }} EventRegister
+* @description 事件注册函数，可以通过 sendEvent 属性自定义如何发送事件。
+*/
+
+
+/**
+ * @type {Record<string, Record<string, EventRegister>>}
+ */
 const allEvents = {
   // [namespace] : {}
   appEvents,
+  debugEvents,
 }
 
 export function registerRemoteEvents() {
@@ -24,7 +38,11 @@ export function registerRemoteEvents() {
     Object.entries(eventRegisters).forEach(([eventName, register]) => {
       const channel = `${namespace}::${eventName}`;
       const unregister = register((...args) => {
-        sendToAllWindows([IPC_EVENT_CHANNEL_NAME, channel, ...args]);
+        if (typeof register.sendEvent === "function") {
+          register.sendEvent([IPC_EVENT_CHANNEL_NAME, channel, ...args]);
+        } else {
+          sendToAllWindows([IPC_EVENT_CHANNEL_NAME, channel, ...args]);
+        }
       });
 
       registerBeforeQuitTask(unregister);

@@ -107,7 +107,7 @@ export default class WindowStateManager {
   #stateChangeHandler = this.#debounceUpdateState.bind(this);
   #windowCloseHandler = this.#updateState.bind(this);
   #windowClosedHandler = () => {
-    console.log("[WindowStateManager] Before save state", this.#state);
+    // console.log("[WindowStateManager] Before save state", this.#state);
     this.#saveState(this.#state);
     this.unmanage();
   }
