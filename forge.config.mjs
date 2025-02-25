@@ -38,6 +38,11 @@ export default {
             target: 'main',
           },
           {
+            entry: 'src/worker/worker.js',
+            config: 'vite.worker.config.mjs',
+            target: 'main',
+          },
+          {
             entry: 'src/preload/preload.js',
             config: 'vite.preload.config.mjs',
             target: 'preload',

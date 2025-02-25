@@ -11,6 +11,7 @@ import WindowStateManager from './WindowStateManager.js';
 import { getMainWindowState, setMainWindowState } from "../store/index.js";
 import { getMainProcessAPIMap } from '../handlers.js';
 import { getMainProcessEventMap } from '../events.js';
+import { whenWorkerReady, rpcMainSide, connectWorkerToRenderer } from '../workerManager.js';
 
 export const mainWindowEventBus = new EventEmitter();
 
@@ -21,10 +22,10 @@ let /** @type {(value:Electron.BrowserWindow) => void} */ resolveMainWindowCreat
 /**
  * 创建主窗口
  * 强制创建，不判断是否已经创建或者正在创建
- * @returns {Electron.BrowserWindow}
+ * @returns {Promise<Electron.BrowserWindow>}
  */
-function createMainWindow() {
-  logger.info("Creating main window...");
+async function createMainWindow() {
+  logger.info("[createMainWindow] Start.");
 
   const resolvers = Promise.withResolvers();
   mainWindowCreated = resolvers.promise;
@@ -36,6 +37,8 @@ function createMainWindow() {
     loadState: () => getMainWindowState(defaultState),
     defaultState,
   });
+
+  await whenWorkerReady;
 
   // Create the browser window.
   mainWindow = new BrowserWindow({
@@ -55,7 +58,7 @@ function createMainWindow() {
       nodeIntegration: false,
       nodeIntegrationInWorker: false,
       preload: path.join(import.meta.dirname, 'preload.cjs'),
-      additionalArguments: getAdditionalArguments(),
+      additionalArguments: await getAdditionalArguments(),
     },
   });
 
@@ -78,7 +81,7 @@ function createMainWindow() {
 
   resolveMainWindowCreate(mainWindow);
 
-  logger.info("Main window created.");
+  logger.info("[createMainWindow] Done. Window id:", mainWindow.id);
   return mainWindow;
 }
 
@@ -98,7 +101,7 @@ export async function ensureMainWindow() {
   }
 
   if (shouldCreate) {
-    createMainWindow();
+    await createMainWindow();
   }
 
   return mainWindowCreated;
@@ -121,6 +124,7 @@ export async function hideMainWindow() {
  * @param {Electron.BrowserWindow} win 
  */
 function _bindEvents(win) {
+  logger.debug("[_bindEvents]");
   win.on('ready-to-show', () => {
     logger.info('Main window ready to show');
     showMainWindow();
@@ -133,11 +137,29 @@ function _bindEvents(win) {
       hideMainWindow();
     }
   });
+
+  win.webContents.on('did-finish-load', () => {
+    connectWorkerToRenderer(win.webContents);
+  });
 }
 
-function getAdditionalArguments() {
+async function getAdditionalArguments() {
+  logger.debug("[mainWindow/getAdditionalArguments] Start.");
+  const mainProcessApiMap = getMainProcessAPIMap();
+  const mainProcessEventMap = getMainProcessEventMap();
+
+  const workerProcessApiMap = await rpcMainSide.getWorkerProcessAPIMap();
+  const workerProcessEventMap = await rpcMainSide.getWorkerProcessEventMap();
+
+  // logger.debug("[mainWindow/getAdditionalArguments] mainProcessApiMap:", mainProcessApiMap);
+  // logger.debug("[mainWindow/getAdditionalArguments] mainProcessEventMap:", mainProcessEventMap);
+  // logger.debug("[mainWindow/getAdditionalArguments] workerProcessApiMap:", workerProcessApiMap);
+
+  logger.debug("[mainWindow/getAdditionalArguments] End.");
   return [
-    '--main-process-api-map=' + JSON.stringify(getMainProcessAPIMap()),
-    '--main-process-event-map='+ JSON.stringify(getMainProcessEventMap()),
+    '--main-process-api-map=' + JSON.stringify(mainProcessApiMap),
+    '--main-process-event-map=' + JSON.stringify(mainProcessEventMap),
+    '--worker-process-api-map=' + JSON.stringify(workerProcessApiMap),
+    '--worker-process-event-map=' + JSON.stringify(workerProcessEventMap),
   ]
 }

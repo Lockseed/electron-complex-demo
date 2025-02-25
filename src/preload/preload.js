@@ -3,26 +3,31 @@
 import { contextBridge } from "electron";
 import "electron-log/preload.js";
 
-import { genRemoteAPIs } from "./remoteAPI.js";
-import { genRemoteEvents } from "./remoteEvent.js";
+import { genMainProcessAPIs, genMainProcessEvents } from "./remoteMain.js";
+import { genWorkerProcessApiAndEvent } from "./remoteWorker.js";
+import * as remoteStores from "./remoteStore.js";
 
-const remoteAPIs = genRemoteAPIs();
-const remoteEvents = genRemoteEvents();
+import * as debug from "./debug.js";
+
+const mainAPIs = genMainProcessAPIs();
+const mainEvents = genMainProcessEvents();
+const { apis: workerAPIs, events: workerEvents } = genWorkerProcessApiAndEvent(); 
+
+const remoteAPIs = {
+  ...mainAPIs,
+  ...workerAPIs,
+};
+
+const remoteEvents = {
+  ...mainEvents,
+  ...workerEvents,
+};
 
 contextBridge.exposeInMainWorld("__remoteAPIs", remoteAPIs);
 contextBridge.exposeInMainWorld("__remoteEvents", remoteEvents);
+contextBridge.exposeInMainWorld("__remoteStores", remoteStores);
 
-remoteEvents.debugEvents?.onTriggerRendererProcessGone((reason) => {
-  console.log("[onTriggerRendererProcessGone] reason ", reason);
-  if (reason === "crash") {
-    let count = 3;
-    let timer = setInterval(() => {
-      console.log("Renderer Crash After ", count);
-      count--;
-      if (count <= 0) {
-        clearInterval(timer);
-        process.crash();
-      }
-    }, 1000);
-  }
-});
+debug.setup({
+  remoteAPIs,
+  remoteEvents,
+})

@@ -14,6 +14,7 @@ import { initI18n } from './i18n/index.js';
 import { initGlobalStore } from './store/index.js';
 import { showMainWindow } from "./windowManager/index.js";
 import { setupApplicationMenu } from './menu.js';
+import { setupWorkerProcess } from './workerManager.js';
 
 // 根据应用名称和当前环境等，设置应用的数据目录
 // 这一类操作对后续影响很大，必须优先完成
@@ -51,9 +52,10 @@ app.whenReady()
   // .then(() => initI18n("zh-CN"))
   // .then(captureUnhandledRejection)
   .then(registerProtocolHandler)
-  .then(registerAPIHandlers)
-  .then(registerRemoteEvents)
+  .then(registerAPIHandlers) // 注册 renderer --> main 的 API
+  .then(registerRemoteEvents) // 注册 main --> renderer 的 Event
   .then(initGlobalStore)
+  .then(setupWorkerProcess)
   .then(showMainWindow)
   .then(setupApplicationMenu)
   .catch(e => logger.error("APP_INIT_ERROR", e));

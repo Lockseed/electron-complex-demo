@@ -86,6 +86,7 @@ export function isInternalUrl(url) {
  * @param {string} windowName 
  */
 export function handleWindowCreated(window, windowName) {
+  logger.info(`[handleWindowCreated] Handle ${windowName} created.`);
   window.webContents.on("will-navigate", (event, url) => {
     logger.debug(`[willNavigate][${windowName}] url: ${url}`);
 

@@ -4,6 +4,7 @@ import { IPC_EVENT_CHANNEL_NAME } from "@/common/constants.js";
 import { registerBeforeQuitTask } from "./beforeQuitTasks.js";
 import { sendToAllWindows } from "./windowManager/index.js";
 import { events as debugEvents } from "./debug/index.js";
+import { events as remoteStoreEvents } from "./store/index.js";
 
 const appEvents = {
   onAppActivate(cb) {
@@ -30,7 +31,8 @@ const appEvents = {
 const allEvents = {
   // [namespace] : {}
   appEvents,
-  debugEvents,
+  debug: debugEvents,
+  remoteStore: remoteStoreEvents
 }
 
 export function registerRemoteEvents() {

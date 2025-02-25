@@ -1,6 +1,7 @@
 import { ipcMain } from "electron";
 import logger from "./logger.js";
 import { IPC_API_CHANNEL_NAME } from "@/common/constants.js";
+import { handlers as remoteStoreHandlers } from "./store/index.js";
 
 const calculatorHandlers = {
   add(_, a, b) {
@@ -10,7 +11,8 @@ const calculatorHandlers = {
 }
 
 const allHandlers = {
-  calculator: calculatorHandlers
+  calculator: calculatorHandlers,
+  remoteStore: remoteStoreHandlers,
 };
 
 /**
