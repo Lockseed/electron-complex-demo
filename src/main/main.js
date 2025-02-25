@@ -3,6 +3,7 @@ import started from 'electron-squirrel-startup';
 import isDev from './isDev.js';
 import logger, { initLogger } from './logger.js';
 import setPaths from './setPaths.js';
+import applyCommandLineSwitches from './applyCommandLineSwitches.js';
 import ensureSingleInstance from './ensureSingleInstance.js';
 import { captureUnhandledRejection } from './unhandled.js';
 import { setupDeepLink } from './deepLink.js';
@@ -29,6 +30,9 @@ if (started) {
 
 // 确保单一实例 防止重复启动
 ensureSingleInstance();
+
+// 设置全局的命令行参数 包含渲染进程 V8 flags
+applyCommandLineSwitches();
 
 // 初始化 i18n
 await initI18n("zh-CN");
@@ -60,7 +64,9 @@ app.on('activate', () => {
   // 一般情况下这里会判断如果当前没有窗口了，则重新创建住窗口
   // 但是在这里由于软件运行期间，我们的主窗口只会被隐藏或最小化
   // 所以当应用重新 activate 时，直接把主窗口 show 就来就好
-  showMainWindow();
+  if (app.isReady()) {
+    showMainWindow();
+  }
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common

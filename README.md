@@ -175,3 +175,70 @@ type DescribableFunction = {
  * }} DescribableFunction
  */
 ```
+
+### 尝试手动触发 OOM 并观测内存使用情况
+
+触发内存溢出
+
+preload 中
+```js
+import { generateString } from "@/common/utils.js";
+
+let oomTimer;
+let memoryHog = [];
+
+function triggerOOM() {
+  if (oomTimer) return; // 避免重复启动
+
+  oomTimer = setInterval(async () => {
+  // 这里生成的数据类型使用的时字符串，而不是 ArrayBuffer，
+  // 因为 preolaod 里面的 ArrayBuffer 很可能是由 Node 在管理，而不是 V8
+  // 而我们的目标是触发 V8 的 OOM
+  // 期望是每次循环涨 10M 内存，按 UTF16 计算，一个字符占用 2 字节
+  // 10M 内存 = (10 * 1024 * 1024 / 2) 个字符
+  memoryHog.push(generateString(10 * 1024 * 1024 / 2));
+  }, 1000); // 每秒执行一次
+}
+```
+
+观察内存变化：
+
+```js
+function kb2mb(kb) {
+  return (kb / 1024).toFixed(2);
+}
+
+async function momoryUsage() {
+  const memInfo = await process.getProcessMemoryInfo();
+  // V8 堆内存信息
+  const heapStats = process.getHeapStatistics();
+
+  const memUsed = memInfo.private;
+  const memTotal = heapStats.heapSizeLimit;
+  const memUsedPercent = (memUsed / memTotal * 100).toFixed(2);
+
+  const heapUsed = heapStats.usedHeapSize;
+  const heapTotal = heapStats.totalHeapSize;
+  const heapUsedPercent = (heapUsed / heapTotal * 100).toFixed(2);
+
+  console.log(`Memory Usage: ${kb2mb(memUsed)}MB / ${kb2mb(memTotal)}MB, ${memUsedPercent}%\nHeap   Usage: ${kb2mb(heapUsed)}MB / ${kb2mb(heapTotal)}MB, ${heapUsedPercent}%`);
+}
+```
+
+触发 OOM 之后可能在 shell 中看到下面类似的日志：
+
+```shell
+<--- Last few GCs --->
+
+[65115:0x11000c50000]    27901 ms: Scavenge (reduce) (interleaved) 199.2 (199.8) -> 199.0 (200.3) MB, pooled: 4 MB, 1.58 / 0.00 ms  (average mu = 0.936, current mu = 0.922) allocation failure;
+[65115:0x11000c50000]    27974 ms: Mark-Compact (reduce) 199.5 (200.3) -> 199.3 (201.0) MB, pooled: 0 MB, 72.42 / 0.00 ms  (+ 2.0 ms in 0 steps since start of marking, biggest step 0.0 ms, walltime since start of marking 100 ms) (average mu = 0.932, curre
+
+<--- JS stacktrace --->
+
+[65115:0110/182055.917640:ERROR:v8_initializer.cc(791)] V8 javascript OOM (Reached heap limit).
+18:20:55.920 (main)     › Render Process Gone: Error: Reason: crashed, Exit Code: 5, URL: http://localhost:5173/
+    at App.<anonymous> (file:///Users/liuqi/Desktop/Laboratory/electron/electron-complex-demo/.vite/build/main.mjs:6593:40)
+    at App.emit (node:events:518:28)
+    at WebContents.<anonymous> (node:electron/js2c/browser_init:2:87955)
+    at WebContents.emit (node:events:518:28)
+```
