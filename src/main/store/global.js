@@ -6,7 +6,8 @@ import Store from "electron-store";
 
 const resolvers = Promise.withResolvers();
 /** @type {Promise<Store<Record<string, unknown>>>} */
-const untilStoreReady = resolvers.promise;
+export const whenGlobalStoreReady = resolvers.promise;
+
 let /** @type {Store<Record<string, unknown>>|undefined} */ globalStore;
 
 /**
@@ -18,6 +19,7 @@ export function initGlobalStore() {
     name: "global-config", 
     cwd: app.getPath("userData"),
   });
+  resolvers.resolve(globalStore);
 }
 
 export function openGlobalStoreFile() {
