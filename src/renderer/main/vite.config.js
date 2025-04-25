@@ -1,6 +1,9 @@
 import { join } from "node:path"
 import { defineConfig } from "vite";
 import { visualizer } from 'rollup-plugin-visualizer';
+import vue from '@vitejs/plugin-vue';
+import vueDevTools from 'vite-plugin-vue-devtools';
+import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig((incomingConfigs) => {
   const { mode, forgeConfigSelf } = incomingConfigs;
@@ -22,7 +25,12 @@ export default defineConfig((incomingConfigs) => {
       target: "esnext",
       outDir,
     },
+    // 尝试解决 Outdated Optimize Dep 问题
+    cacheDir: join(process.cwd(), `node_modules/.vite/renderer-${name}`),
     plugins: [
+      vue(),
+      vueDevTools(),
+      tailwindcss(),
       NPM_COMMAND === 'report' ? visualizer({ filename: `states-renderer-${name}.html` }) : null,
     ].filter(Boolean),
     resolve: {
@@ -30,5 +38,12 @@ export default defineConfig((incomingConfigs) => {
         '@': srcDir,
       },
     },
+    optimizeDeps: {
+      include: [
+        'vue',
+        'vue-router',
+        'pinia'
+      ]
+    }
   }
 });

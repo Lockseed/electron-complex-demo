@@ -242,3 +242,107 @@ async function momoryUsage() {
     at WebContents.<anonymous> (node:electron/js2c/browser_init:2:87955)
     at WebContents.emit (node:events:518:28)
 ```
+
+### 引入 Vue3
+
+在 mian 窗口中使用 vue3 作为前端框架，并同时引入 vue-router 作为路由管理，pinia 作为状态管理，vue-devtools 作为开发辅助工具。
+
+基于使用 vite 作为打包工具考虑安装哪些依赖：
+
+```zsh
+npm install vue vue-router pinia
+npm install -D @vitejs/plugin-vue vite-plugin-vue-devtools
+```
+
+更新 main 窗口的 vite.config.js 配置文件：
+
+```js
+//...
+import vue from '@vitejs/plugin-vue';
+import vueDevTools from 'vite-plugin-vue-devtools'
+
+export default defineConfig((incomingConfigs) => {
+  // ...
+
+  return {
+    //...
+    plugins: [
+      vue(),
+      vueDevTools(),
+      //...
+    ].filter(Boolean),
+    //...
+  }
+});
+```
+
+> 现在 vue-devtools 的引入方式和以前很不一样，不需要改 Electron 主进程代码了。
+> devtools 相关的代码会直接注入到前端页面。
+
+剩下的步骤就和其他 Vue3 项目一样了，创建 App.vue，创建路由、状态管理等模块，并更新 main.js 文件。
+
+VS Code 扩展使用 Vue - Official 。
+
+### 引入 Tailwind
+
+Tailwind CSS 框架近几年很流行，本质上可以说是个 postcss 插件。之前一直没有实践过，这次试一试。
+目前的版本是 Tailwind V4 安装和使用相比以前更加简单，对 Vite 支持也更好。
+
+安装：
+
+```zsh
+npm install -D tailwindcss @tailwindcss/vite 
+```
+
+然后在 renderer 窗口的 vite.config.js 中添加相关 plugin：
+
+```js
+import tailwindcss from '@tailwindcss/vite';
+
+export default defineConfig((incomingConfigs) => {
+  // ...
+
+  return {
+    //...
+    plugins: [
+      tailwindcss(),
+      //...
+    ].filter(Boolean),
+    //...
+  }
+});
+```
+
+V4 版本不太依赖于 js 配置文件了，所以一般的配置项都放在 css 文件里，比如放在 `src/renderer/css/tailwind.css`:
+
+```css
+@import "tailwindcss";
+@source "${root}/src/renderer/**/*.{vue,js,jsx,tsx,html}"
+```
+
+剩下的就是在前端入口文件 main.js 中引入相关的 css 了。
+
+### Vite: 504 (Outdated Optimize Dep)
+
+这个问题多半是由于 vite 的依赖与构建和缓存问题导致的，我这边的解决方式是通过修改 `vite.config.js` 配置解决。
+
+```js
+export default defineConfig((incomingConfigs) => {
+  // ...
+
+  return {
+    //...
+    // renderer process 的 cache 和 main precess 的 cache 分开，而且各窗口分开
+    cacheDir: join(process.cwd(), `node_modules/.vite/renderer-${name}`),
+    //...
+    // 启动时主动预构建核心依赖
+    optimizeDeps: {
+      include: [
+        'vue',
+        'vue-router',
+        'pinia'
+      ]
+    }
+  }
+});
+```

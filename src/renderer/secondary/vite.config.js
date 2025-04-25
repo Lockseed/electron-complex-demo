@@ -22,6 +22,8 @@ export default defineConfig((incomingConfigs) => {
       target: "esnext",
       outDir,
     },
+    // 尝试解决 Outdated Optimize Dep 问题
+    cacheDir: join(process.cwd(), `node_modules/.vite/renderer-${name}`),
     plugins: [
       NPM_COMMAND === 'report' ? visualizer({ filename: `states-renderer-${name}.html` }) : null,
     ].filter(Boolean),
@@ -29,6 +31,13 @@ export default defineConfig((incomingConfigs) => {
       alias: {
         '@': srcDir,
       },
+    },
+    optimizeDeps: {
+      include: [
+        'vue',
+        'vue-router',
+        'pinia'
+      ]
     },
   }
 });
