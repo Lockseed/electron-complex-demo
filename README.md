@@ -346,3 +346,10 @@ export default defineConfig((incomingConfigs) => {
   }
 });
 ```
+
+### Node.js 版本锁定
+
+1. 在 `package.json` 中增加 `engines` 字段，设置允许的版本范围。
+2. 在 `.nvmrc` 文件中规定一个具体的使用版本，通过 `nvm use` 命令切换。
+3. `package.json` 中增加一个 `preinstall script`，在 `npm install` 之前运行，校验版本。
+4. `preinstall` 脚本详见 `checkNodeVersion.js`。
