@@ -1,5 +1,6 @@
 import { createRouter, createWebHashHistory } from "vue-router";
 import EventListView from "../views/EventListView.vue";
+import EventLayout from "../views/event/EventLayout.vue";
 import AboutView from "../views/AboutView.vue";
 
 const router = createRouter({
@@ -27,6 +28,29 @@ const router = createRouter({
 
         return { page: parseInt(page) || 1 };
       },
+    },
+    {
+      path: "/event/:id",
+      name: "EventLayout",
+      component: EventLayout,
+      props: true,
+      children: [
+        {
+          path: "",
+          name: "EventDetails",
+          component: () => import("../views/event/EventDetails.vue"),
+        },
+        {
+          path: "edit",
+          name: "EventEdit",
+          component: () => import("../views/event/EventEdit.vue"),
+        },
+        {
+          path: "register",
+          name: "EventRegister",
+          component: () => import("../views/event/EventRegister.vue"),
+        }
+      ],
     },
     {
       path: "/about-us",
