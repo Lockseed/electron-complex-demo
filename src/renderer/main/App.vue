@@ -2,7 +2,8 @@
   <div id="layout" class="text-center">
     <header>
       <nav class="p-8">
-        <RouterLink :to="{ name: 'EventList' }">Events</RouterLink>
+        <RouterLink :to="{ name: 'EventList' }">Events</RouterLink> |
+        <RouterLink :to="{ name: 'DaisyUI' }">DaisyUI</RouterLink> |
         <RouterLink :to="{ name: 'About' }">About</RouterLink>
       </nav>
     </header>
@@ -11,7 +12,7 @@
 </template>
 
 <style>
-#layout {
+/* #layout {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -24,5 +25,5 @@ nav a {
 
 nav a.router-link-exact-active {
   color: #42b983;
-}
+} */
 </style>

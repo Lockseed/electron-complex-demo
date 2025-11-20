@@ -1,6 +1,7 @@
 import { createRouter, createWebHashHistory } from "vue-router";
 import EventListView from "../views/EventListView.vue";
 import EventLayout from "../views/event/EventLayout.vue";
+import DaisyUIView from "../views/DaisyUIView.vue";
 import AboutView from "../views/AboutView.vue";
 
 const router = createRouter({
@@ -51,6 +52,11 @@ const router = createRouter({
           component: () => import("../views/event/EventRegister.vue"),
         }
       ],
+    },
+    {
+      path: "/daisyui",
+      name: "DaisyUI",
+      component: DaisyUIView,
     },
     {
       path: "/about-us",
