@@ -2,8 +2,8 @@ import { app } from "electron";
 import i18next from "i18next";
 import logger from "../logger.js";
 
-import zhCN from "./zh-CN.json" assert { type: "json" };
-import en from "./en.json" assert { type: "json" };
+import zhCN from "./zh-CN.json" with { type: "json" };
+import en from "./en.json" with { type: "json" };
 
 // 这里只加载主进程中使用的 i18n 资源
 const resources = {
