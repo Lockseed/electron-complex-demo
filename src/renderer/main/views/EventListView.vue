@@ -32,24 +32,37 @@ onMounted(() => {
 </script>
 
 <template>
-  <h1 class="text-3xl font-bold">Events for Good</h1>
-  <div class="events flex flex-col items-center">
-    <EventCard v-for="event in events" :key="event.key" :event="event" />
+  <div class="max-w-4xl mx-auto">
+    <h1 class="text-4xl font-bold text-center mb-8 text-base-content">Events for Good</h1>
+    
+    <div class="events flex flex-col gap-6 mb-8 items-center">
+      <EventCard v-for="event in events" :key="event.key" :event="event" />
+    </div>
 
-    <div class="pagination flex flex-row items-center w-[290px]">
+    <div class="d-join grid grid-cols-2 max-w-xs mx-auto">
       <RouterLink 
-        id="page-prev" 
-        class="flex-auto text-left"
         v-if="page !== 1" 
         :to="{name: 'EventList', query: { page: page - 1 }}" 
-      >&#60; Previous</RouterLink>
+        class="d-join-item d-btn d-btn-outline"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+        Previous
+      </RouterLink>
+      <button v-else class="d-join-item d-btn d-btn-disabled" disabled>Previous</button>
+      
       <RouterLink 
-        id="page-next" 
-        class="flex-auto text-right"
         v-if="hasNextPage" 
         :to="{name: 'EventList', query: { page: page + 1 }}"
-      >Next &#62;</RouterLink>
-      
+        class="d-join-item d-btn d-btn-outline"
+      >
+        Next
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+      </RouterLink>
+      <button v-else class="d-join-item d-btn d-btn-disabled" disabled>Next</button>
     </div>
   </div>
 </template>
