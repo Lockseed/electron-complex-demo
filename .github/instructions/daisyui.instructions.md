@@ -1,3 +1,7 @@
+---
+applyTo: "**/*.vue, **/*.html, **/*.css"
+---
+
 # daisyUI 5
 daisyUI 5 is a CSS library for Tailwind CSS 4
 daisyUI 5 provides class names for common UI components
