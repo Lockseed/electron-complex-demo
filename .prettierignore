@@ -1,0 +1,12 @@
+node_modules
+.vite
+out
+dist
+.temp
+states-*.html
+package-lock.json
+pnpm-lock.yaml
+*.min.js
+*.min.css
+.github
+.vscode
