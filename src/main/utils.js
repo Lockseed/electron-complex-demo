@@ -1,14 +1,13 @@
-
-export const isMacOS = process.platform === "darwin";
-export const isWindows = process.platform === "win32";
+export const isMacOS = process.platform === 'darwin';
+export const isWindows = process.platform === 'win32';
 
 /**
- * 
- * @param {string} value 
+ *
+ * @param {string} value
  * @returns {URL | undefined}
  */
 export function tryParseUrl(value) {
-  if (typeof value !== "string") {
+  if (typeof value !== 'string') {
     return undefined;
   }
 

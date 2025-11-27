@@ -1,17 +1,17 @@
-import { join } from "node:path"
-import { defineConfig } from "vite";
+import { join } from 'node:path';
+import { defineConfig } from 'vite';
 import { visualizer } from 'rollup-plugin-visualizer';
 
 export default defineConfig((incomingConfigs) => {
   const { mode, forgeConfigSelf } = incomingConfigs;
-  const name = forgeConfigSelf.name ?? "secondary_window";
+  const name = forgeConfigSelf.name ?? 'secondary_window';
 
   // import.meta.dirname 指向当前配置文件所在的目录(无 file:// 前缀)
   // process.cwd() 指向当前工作目录(无 file:// 前缀)
 
   const dirname = import.meta.dirname;
   const outDir = join(process.cwd(), `.vite/renderer/${name}`);
-  const srcDir = join(process.cwd(), "src");
+  const srcDir = join(process.cwd(), 'src');
 
   const NPM_COMMAND = process.env.npm_lifecycle_event;
 
@@ -19,7 +19,7 @@ export default defineConfig((incomingConfigs) => {
     root: dirname,
     mode,
     build: {
-      target: "esnext",
+      target: 'esnext',
       outDir,
     },
     // 尝试解决 Outdated Optimize Dep 问题
@@ -33,11 +33,7 @@ export default defineConfig((incomingConfigs) => {
       },
     },
     optimizeDeps: {
-      include: [
-        'vue',
-        'vue-router',
-        'pinia'
-      ]
+      include: ['vue', 'vue-router', 'pinia'],
     },
-  }
+  };
 });

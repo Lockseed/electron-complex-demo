@@ -1,4 +1,4 @@
-import { logger } from "./logger.js";
+import { logger } from './logger.js';
 
 /**
  * @type {Record<string, Record<string, (...args: any[]) => () => void>>}
@@ -6,8 +6,8 @@ import { logger } from "./logger.js";
 const allWorkerEvents = {};
 
 /**
- * 
- * @param {import("../common/types.js").RpcServerRendererToWorker} rpc 
+ *
+ * @param {import("../common/types.js").RpcServerRendererToWorker} rpc
  */
 export function registerWorkerEvents(rpc) {
   Object.entries(allWorkerEvents).forEach(([namespace, eventRegisterMap]) => {
@@ -17,7 +17,7 @@ export function registerWorkerEvents(rpc) {
         rpc.postEvent(channel, ...args);
         logger.debug(`[registerWithLog] Post event ${channel}`);
       });
-      process.on("exit", () => {
+      process.on('exit', () => {
         unregister();
       });
     });

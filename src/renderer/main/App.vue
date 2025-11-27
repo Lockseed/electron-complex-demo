@@ -9,17 +9,20 @@
               class="h-5 w-5"
               fill="none"
               viewBox="0 0 24 24"
-              stroke="currentColor">
+              stroke="currentColor"
+            >
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
                 stroke-width="2"
-                d="M4 6h16M4 12h16M4 18h7" />
+                d="M4 6h16M4 12h16M4 18h7"
+              />
             </svg>
           </div>
           <ul
             tabindex="0"
-            class="d-menu d-menu-sm d-dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
+            class="d-menu d-menu-sm d-dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
+          >
             <li><RouterLink :to="{ name: 'EventList' }">Events</RouterLink></li>
             <li><RouterLink :to="{ name: 'DaisyUI' }">DaisyUI</RouterLink></li>
             <li><RouterLink :to="{ name: 'About' }">About</RouterLink></li>
@@ -34,8 +37,7 @@
           <li><RouterLink :to="{ name: 'About' }">About</RouterLink></li>
         </ul>
       </div>
-      <div class="d-navbar-end">
-      </div>
+      <div class="d-navbar-end"></div>
     </header>
     <main class="container mx-auto px-4 py-8">
       <RouterView />

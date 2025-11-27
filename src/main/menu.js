@@ -1,10 +1,10 @@
-import { app, Menu, MenuItem, shell } from "electron";
-import { t } from "i18next";
-import { isMacOS } from "./utils.js";
-import logger from "./logger.js";
-import isDev from "./isDev.js";
-import { openGlobalStoreFile } from "./store/global.js";
-import { triggerRendererProcessGone } from "./debug/index.js";
+import { app, Menu, MenuItem, shell } from 'electron';
+import { t } from 'i18next';
+import { isMacOS } from './utils.js';
+import logger from './logger.js';
+import isDev from './isDev.js';
+import { openGlobalStoreFile } from './store/global.js';
+import { triggerRendererProcessGone } from './debug/index.js';
 
 export function setupApplicationMenu() {
   function buildApplicationMenu() {
@@ -18,7 +18,11 @@ export function setupApplicationMenu() {
         label: app.name,
         submenu: [
           { role: 'about', label: t('appMenu.about', { appName: app.name }) },
-          { label: t('appMenu.preferences'), accelerator: 'CmdOrCtrl+,', click: () => logger.info('Open preferences') },
+          {
+            label: t('appMenu.preferences'),
+            accelerator: 'CmdOrCtrl+,',
+            click: () => logger.info('Open preferences'),
+          },
           { type: 'separator' },
           { role: 'services', label: t('appMenu.services') },
           { type: 'separator' },
@@ -27,7 +31,7 @@ export function setupApplicationMenu() {
           { role: 'unhide' },
           { type: 'separator' },
           { role: 'quit', label: t('appMenu.quit', { appName: app.name }) },
-        ]
+        ],
       });
     }
 
@@ -44,24 +48,24 @@ export function setupApplicationMenu() {
           { role: 'forceReload', label: t('appMenu.forceReload') },
           { role: 'toggleDevTools', label: t('appMenu.toggleDevTools') },
           { type: 'separator' },
-          { 
-            label: t('appMenu.openGlobalStore'), 
-            click: () => openGlobalStoreFile().catch(e => logger.error(e)) 
+          {
+            label: t('appMenu.openGlobalStore'),
+            click: () => openGlobalStoreFile().catch((e) => logger.error(e)),
           },
           { type: 'separator' },
           {
             label: t('appMenu.triggerRendererProcessCrash'),
-            click: () => triggerRendererProcessGone("crash")
+            click: () => triggerRendererProcessGone('crash'),
           },
           {
             label: t('appMenu.triggerRendererProcessOom'),
-            click: () => triggerRendererProcessGone("oom")
-          }
-        ]
+            click: () => triggerRendererProcessGone('oom'),
+          },
+        ],
       });
     }
-  
-    /** @type {Array<(Electron.MenuItemConstructorOptions) | (Electron.MenuItem)>} */ 
+
+    /** @type {Array<(Electron.MenuItemConstructorOptions) | (Electron.MenuItem)>} */
     const template = [
       getAppMenu(),
       new MenuItem({
@@ -74,23 +78,24 @@ export function setupApplicationMenu() {
           { role: 'copy', label: t('appMenu.copy') },
           { role: 'paste', label: t('appMenu.paste') },
           { role: 'selectAll', label: t('appMenu.selectAll') },
-        ]
+        ],
       }),
       new MenuItem({ role: 'windowMenu', label: t('appMenu.window') }),
       getDebugMenu(),
-      new MenuItem({ 
-        role: 'help', 
+      new MenuItem({
+        role: 'help',
         label: t('appMenu.help'),
         submenu: [
-          { label: t('appMenu.openRepo'), click: () => shell.openExternal('https://github.com/Lockseed/electron-complex-demo') },
-        ]
+          {
+            label: t('appMenu.openRepo'),
+            click: () => shell.openExternal('https://github.com/Lockseed/electron-complex-demo'),
+          },
+        ],
       }),
       // TODO: 其他 MenuItems 文件 / 编辑 / 识图 / 调试...
     ].filter(Boolean);
-  
-    Menu.setApplicationMenu(
-      Menu.buildFromTemplate(template)
-    );
+
+    Menu.setApplicationMenu(Menu.buildFromTemplate(template));
   }
 
   buildApplicationMenu();

@@ -8,7 +8,7 @@ import { appIsQuitting } from '../beforeQuitTasks.js';
 // import { isWindows, isMacOS } from '../utils';
 import { showWindow, hideWindow, handleWindowCreated } from './windowHelpers.js';
 import WindowStateManager from './WindowStateManager.js';
-import { getMainWindowState, setMainWindowState } from "../store/index.js";
+import { getMainWindowState, setMainWindowState } from '../store/index.js';
 import { getMainProcessAPIMap } from '../handlers.js';
 import { getMainProcessEventMap } from '../events.js';
 import { whenWorkerReady, rpcMainSide, connectWorkerToRenderer } from '../workerManager.js';
@@ -25,7 +25,7 @@ let /** @type {(value:Electron.BrowserWindow) => void} */ resolveMainWindowCreat
  * @returns {Promise<Electron.BrowserWindow>}
  */
 async function createMainWindow() {
-  logger.info("[createMainWindow] Start.");
+  logger.info('[createMainWindow] Start.');
 
   const resolvers = Promise.withResolvers();
   mainWindowCreated = resolvers.promise;
@@ -65,7 +65,7 @@ async function createMainWindow() {
   // 记录主窗口大小位置变化
   windowState.manage(mainWindow);
   // 一些窗口创建后的通用处理逻辑
-  handleWindowCreated(mainWindow, "MainWindow");
+  handleWindowCreated(mainWindow, 'MainWindow');
   // 绑定事件
   _bindEvents(mainWindow);
 
@@ -73,7 +73,9 @@ async function createMainWindow() {
   if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
     mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL);
   } else {
-    mainWindow.loadFile(path.join(import.meta.dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`));
+    mainWindow.loadFile(
+      path.join(import.meta.dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`)
+    );
   }
 
   // Open the DevTools.
@@ -81,7 +83,7 @@ async function createMainWindow() {
 
   resolveMainWindowCreate(mainWindow);
 
-  logger.info("[createMainWindow] Done. Window id:", mainWindow.id);
+  logger.info('[createMainWindow] Done. Window id:', mainWindow.id);
   return mainWindow;
 }
 
@@ -120,11 +122,11 @@ export async function hideMainWindow() {
 }
 
 /**
- * 
- * @param {Electron.BrowserWindow} win 
+ *
+ * @param {Electron.BrowserWindow} win
  */
 function _bindEvents(win) {
-  logger.debug("[_bindEvents]");
+  logger.debug('[_bindEvents]');
   win.on('ready-to-show', () => {
     logger.info('Main window ready to show');
     showMainWindow();
@@ -144,7 +146,7 @@ function _bindEvents(win) {
 }
 
 async function getAdditionalArguments() {
-  logger.debug("[mainWindow/getAdditionalArguments] Start.");
+  logger.debug('[mainWindow/getAdditionalArguments] Start.');
   const mainProcessApiMap = getMainProcessAPIMap();
   const mainProcessEventMap = getMainProcessEventMap();
 
@@ -155,11 +157,11 @@ async function getAdditionalArguments() {
   // logger.debug("[mainWindow/getAdditionalArguments] mainProcessEventMap:", mainProcessEventMap);
   // logger.debug("[mainWindow/getAdditionalArguments] workerProcessApiMap:", workerProcessApiMap);
 
-  logger.debug("[mainWindow/getAdditionalArguments] End.");
+  logger.debug('[mainWindow/getAdditionalArguments] End.');
   return [
     '--main-process-api-map=' + JSON.stringify(mainProcessApiMap),
     '--main-process-event-map=' + JSON.stringify(mainProcessEventMap),
     '--worker-process-api-map=' + JSON.stringify(workerProcessApiMap),
     '--worker-process-event-map=' + JSON.stringify(workerProcessEventMap),
-  ]
+  ];
 }

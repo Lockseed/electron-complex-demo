@@ -1,10 +1,10 @@
-import crypto from "node:crypto";
-import fs from "node:fs";
+import crypto from 'node:crypto';
+import fs from 'node:fs';
 
 /**
- * 
- * @param {fs.PathLike} filePath 
- * @param {string} algorithm 
+ *
+ * @param {fs.PathLike} filePath
+ * @param {string} algorithm
  * @returns {Promise<string>}
  */
 export function calculateChecksum(filePath, algorithm = 'sha256') {

@@ -2,7 +2,6 @@
 import { join } from 'node:path';
 import { defineConfig } from 'vite';
 
-
 /**
  * @typedef {import('vite').ConfigEnv & { forgeConfigSelf: { name?: string } }} ForgeConfigEnv
  */
@@ -14,7 +13,7 @@ export default defineConfig(
    */
   (incomingConfigs) => {
     const { mode, forgeConfigSelf } = incomingConfigs;
-    const name = forgeConfigSelf.name ?? "";
+    const name = forgeConfigSelf.name ?? '';
 
     const outDir = join(process.cwd(), `.vite/renderer/${name}`);
 
@@ -22,8 +21,8 @@ export default defineConfig(
       mode,
       build: {
         target: 'esnext',
-        outDir
-      }
-    }
+        outDir,
+      },
+    };
   }
 );

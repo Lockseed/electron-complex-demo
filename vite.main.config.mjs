@@ -1,4 +1,4 @@
-import { resolve } from "node:path";
+import { resolve } from 'node:path';
 import { defineConfig } from 'vite';
 import { visualizer } from 'rollup-plugin-visualizer';
 
@@ -13,7 +13,7 @@ export default defineConfig({
     lib: {
       entry: 'src/main/main.js',
       fileName: () => '[name].mjs',
-      formats: ['es']
+      formats: ['es'],
     },
     rollupOptions: {
       plugins: [

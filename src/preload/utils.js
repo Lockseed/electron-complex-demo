@@ -1,28 +1,27 @@
-
 /**
- * 
- * @param {string} key 
+ *
+ * @param {string} key
  */
 export function parseProcessArgv(key) {
   try {
-    const arg = process.argv.find(arg => arg.startsWith(key));
-    return arg ? JSON.parse(arg.split("=")[1]) : null;
+    const arg = process.argv.find((arg) => arg.startsWith(key));
+    return arg ? JSON.parse(arg.split('=')[1]) : null;
   } catch (_) {
-    // 
-    return null
+    //
+    return null;
   }
 }
 
 /**
- * 
- * @param {[string, string[]][]|null} apiMap 
+ *
+ * @param {[string, string[]][]|null} apiMap
  * @param {(channel: string, ...args: any[]) => Promise<any>} caller
- * @param {object} [options={}] 
- * @param {string} [options.tag] 
+ * @param {object} [options={}]
+ * @param {string} [options.tag]
  * @returns {Record<string, Record<string, (...args: any[]) => Promise<any> >> | {}}
  */
 export function createRemoteAPI(apiMap, caller, options = {}) {
-  const tag = options?.tag || "unknown";
+  const tag = options?.tag || 'unknown';
 
   if (!apiMap || !Array.isArray(apiMap)) {
     console.warn(`[createRemoteAPI][${tag}] Invalid apiMap.`);
@@ -34,11 +33,14 @@ export function createRemoteAPI(apiMap, caller, options = {}) {
     if (!Array.isArray(handlerNames)) {
       console.error(`[createRemoteAPI][${tag}] Invalid handlerNames for namespace: ${namespace}`);
       return apiObj;
-    } else if (handlerNames.length >= 1 && handlerNames.some(handlerName => typeof handlerName !== 'string')) {
+    } else if (
+      handlerNames.length >= 1 &&
+      handlerNames.some((handlerName) => typeof handlerName !== 'string')
+    ) {
       console.error(`[createRemoteAPI][${tag}] Invalid handlerName for namespace: ${namespace}`);
       return apiObj;
     }
-    
+
     // apiObj["serviceA"] = { handlerA1: callerA1, handerA2: callerA2, ... }
     apiObj[namespace] = handlerNames.reduce((callerObj, handlerName) => {
       const channel = `${namespace}::${handlerName}`;
@@ -64,15 +66,15 @@ export function createRemoteAPI(apiMap, caller, options = {}) {
  */
 
 /**
- * 
- * @param {[string, string[]][]|null} eventMap 
- * @param {(channel: string) => RemoteEventSubscription} register 
- * @param {object} [options={}] 
- * @param {string} [options.tag] 
+ *
+ * @param {[string, string[]][]|null} eventMap
+ * @param {(channel: string) => RemoteEventSubscription} register
+ * @param {object} [options={}]
+ * @param {string} [options.tag]
  * @returns {Record<string, Record<string, RemoteEventSubscription>> | {}}
  */
 export function createRemoteEvent(eventMap, register, options = {}) {
-  const tag = options?.tag || "unknown";
+  const tag = options?.tag || 'unknown';
 
   if (!eventMap || !Array.isArray(eventMap)) {
     console.warn(`[createRemoteEvent][${tag}] Invalid eventMap.`);
@@ -83,7 +85,10 @@ export function createRemoteEvent(eventMap, register, options = {}) {
     if (!Array.isArray(eventNames)) {
       console.error(`[createRemoteEvent][${tag}] Invalid eventNames for namespace: ${namespace}`);
       return eventObj;
-    } else if (eventNames.length >= 1 && eventNames.some(eventName => typeof eventName !== 'string')) {
+    } else if (
+      eventNames.length >= 1 &&
+      eventNames.some((eventName) => typeof eventName !== 'string')
+    ) {
       console.error(`[createRemoteEvent][${tag}] Invalid eventName for namespace: ${namespace}`);
       return eventObj;
     }
@@ -98,7 +103,6 @@ export function createRemoteEvent(eventMap, register, options = {}) {
     return eventObj;
   }, {});
 }
-
 
 // const eventRegisterPair = eventNames.map((eventName) => {
 //   const channel = `${namespace}::${eventName}`;

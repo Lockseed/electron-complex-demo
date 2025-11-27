@@ -1,4 +1,4 @@
-import { resolve } from "node:path";
+import { resolve } from 'node:path';
 import { defineConfig } from 'vite';
 import { visualizer } from 'rollup-plugin-visualizer';
 
@@ -13,13 +13,13 @@ export default defineConfig({
     lib: {
       entry: 'src/worker/worker.js',
       fileName: () => '[name].mjs',
-      formats: ['es']
+      formats: ['es'],
     },
     rollupOptions: {
       plugins: [
         NPM_COMMAND === 'report' ? visualizer({ filename: 'states-worker.html' }) : null,
       ].filter(Boolean),
-    }
+    },
   },
   resolve: {
     alias: {

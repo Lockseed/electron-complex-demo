@@ -1,4 +1,4 @@
-import { resolve } from "node:path";
+import { resolve } from 'node:path';
 import { defineConfig } from 'vite';
 import { visualizer } from 'rollup-plugin-visualizer';
 
@@ -19,7 +19,7 @@ export default defineConfig({
       plugins: [
         NPM_COMMAND === 'report' ? visualizer({ filename: 'states-preload.html' }) : null,
       ].filter(Boolean),
-    }
+    },
   },
   resolve: {
     alias: {

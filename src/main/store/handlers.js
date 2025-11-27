@@ -1,4 +1,4 @@
-import { whenGlobalStoreReady } from "./global.js"
+import { whenGlobalStoreReady } from './global.js';
 
 export default {
   async getGlobalStoreState() {
@@ -18,4 +18,4 @@ export default {
     const store = await whenGlobalStoreReady;
     store.clear();
   },
-}
+};

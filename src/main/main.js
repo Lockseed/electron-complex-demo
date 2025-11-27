@@ -8,11 +8,11 @@ import ensureSingleInstance from './ensureSingleInstance.js';
 import { captureUnhandledRejection } from './unhandled.js';
 import { setupDeepLink } from './deepLink.js';
 import { registerProtocolHandler } from './protocol.js';
-import { registerAPIHandlers } from "./handlers.js";
+import { registerAPIHandlers } from './handlers.js';
 import { registerRemoteEvents } from './events.js';
 import { initI18n } from './i18n/index.js';
 import { initGlobalStore } from './store/index.js';
-import { showMainWindow } from "./windowManager/index.js";
+import { showMainWindow } from './windowManager/index.js';
 import { setupApplicationMenu } from './menu.js';
 import { setupWorkerProcess } from './workerManager.js';
 
@@ -22,7 +22,7 @@ setPaths({ isDev });
 
 // 初始化日志 相对优先级较高
 initLogger();
-logger.info("APP_START");
+logger.info('APP_START');
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
@@ -36,7 +36,7 @@ ensureSingleInstance();
 applyCommandLineSwitches();
 
 // 初始化 i18n
-await initI18n("zh-CN");
+await initI18n('zh-CN');
 
 // 捕获全局未处理的 rejection
 captureUnhandledRejection();
@@ -47,8 +47,11 @@ setupDeepLink();
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.whenReady()
-  .then(() => { logger.info("APP_READY"); })
+app
+  .whenReady()
+  .then(() => {
+    logger.info('APP_READY');
+  })
   // .then(() => initI18n("zh-CN"))
   // .then(captureUnhandledRejection)
   .then(registerProtocolHandler)
@@ -58,11 +61,10 @@ app.whenReady()
   .then(setupWorkerProcess)
   .then(showMainWindow)
   .then(setupApplicationMenu)
-  .catch(e => logger.error("APP_INIT_ERROR", e));
-
+  .catch((e) => logger.error('APP_INIT_ERROR', e));
 
 app.on('activate', () => {
-  logger.info("APP_ACTIVATE");
+  logger.info('APP_ACTIVATE');
   // 一般情况下这里会判断如果当前没有窗口了，则重新创建住窗口
   // 但是在这里由于软件运行期间，我们的主窗口只会被隐藏或最小化
   // 所以当应用重新 activate 时，直接把主窗口 show 就来就好

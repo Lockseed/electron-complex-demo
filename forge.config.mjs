@@ -56,7 +56,7 @@ export default {
           {
             name: 'secondary_window',
             config: 'src/renderer/secondary/vite.config.js',
-          }
+          },
         ],
       },
     },

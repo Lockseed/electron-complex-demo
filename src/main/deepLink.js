@@ -1,7 +1,7 @@
-import path from "node:path";
-import { app } from "electron";
-import isDev from "./isDev.js";
-import logger from "./logger.js";
+import path from 'node:path';
+import { app } from 'electron';
+import isDev from './isDev.js';
+import logger from './logger.js';
 
 let protocol = isDev ? 'electron-demo-dev' : 'electron-demo';
 
@@ -14,11 +14,7 @@ let protocol = isDev ? 'electron-demo-dev' : 'electron-demo';
 export function setupDeepLink() {
   if (process.defaultApp) {
     if (process.argv.length >= 2) {
-      app.setAsDefaultProtocolClient(
-        protocol, 
-        process.execPath, 
-        [path.resolve(process.argv[1])]
-      );
+      app.setAsDefaultProtocolClient(protocol, process.execPath, [path.resolve(process.argv[1])]);
       logger.log(`[setupDeepLink] Set as default protocol client: ${protocol}`);
       logger.log('[setupDeepLink] process.execPath:', process.execPath);
     }
@@ -35,7 +31,7 @@ export function setupDeepLink() {
   });
 
   // Windows 下通过 second-instance 事件处理
-  app.on('second-instance', (event, argv, workingDirectory) => {
+  app.on('second-instance', (event, argv, _workingDirectory) => {
     logger.log('[setupDeepLink][second-instance] argv:', argv);
     const url = argv.pop();
     if (url?.startsWith(`${protocol}://`)) {

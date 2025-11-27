@@ -1,22 +1,25 @@
-import { ipcRenderer } from "electron";
-import { IPC_API_CHANNEL_NAME } from "@/common/constants.js";
-import InMemoryStore from "@/common/InMemoryStore.js";
+import { ipcRenderer } from 'electron';
+import { IPC_API_CHANNEL_NAME } from '@/common/constants.js';
+import InMemoryStore from '@/common/InMemoryStore.js';
 
-const initialGlobalStoreState = ipcRenderer.sendSync(IPC_API_CHANNEL_NAME, "remoteStore::getGlobalStoreState");
+const initialGlobalStoreState = ipcRenderer.sendSync(
+  IPC_API_CHANNEL_NAME,
+  'remoteStore::getGlobalStoreState'
+);
 
 function sendToMain(action, ...args) {
   ipcRenderer.invoke(IPC_API_CHANNEL_NAME, action, ...args);
 }
 
 /**
- * 
- * @param {Object} options 
+ *
+ * @param {Object} options
  * @param {Object} [options.initialState]
  * @param {string} options.onChangeEvent
  * @param {string} options.setEvent
  * @param {string} options.deleteEvent
  * @param {string} options.clearEvent
- * @returns 
+ * @returns
  */
 function createRemoteStoreProxy(options) {
   const store = new InMemoryStore({
@@ -53,18 +56,16 @@ function createRemoteStoreProxy(options) {
     },
     all() {
       return store.store;
-    }
-  }
+    },
+  };
 }
 
 const globalStore = createRemoteStoreProxy({
   initialState: initialGlobalStoreState,
-  onChangeEvent: "onGlobalStoreChanged",
-  setEvent: "setGlobalStore",
-  deleteEvent: "deleteGlobalStore",
-  clearEvent: "clearGlobalStore",
+  onChangeEvent: 'onGlobalStoreChanged',
+  setEvent: 'setGlobalStore',
+  deleteEvent: 'deleteGlobalStore',
+  clearEvent: 'clearGlobalStore',
 });
 
-export {
-  globalStore
-}
+export { globalStore };

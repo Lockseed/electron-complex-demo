@@ -7,12 +7,10 @@
     "module": "esnext",
     "baseUrl": "../",
     "paths": {
-      "@/*": ["./*"],
-    },
+      "@/*": ["./*"]
+    }
   },
-  "include": [
-    "./**/*"
-  ],
+  "include": ["./**/*"],
   "exclude": [
     "dist",
     "node_modules",
@@ -23,9 +21,9 @@
     ".npm",
     ".yarn",
     ".vite",
-    ".temp",
+    ".temp"
   ],
   "typeAcquisition": {
-    "enable": true,
+    "enable": true
   }
 }

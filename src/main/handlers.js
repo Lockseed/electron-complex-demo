@@ -1,14 +1,14 @@
-import { ipcMain } from "electron";
-import logger from "./logger.js";
-import { IPC_API_CHANNEL_NAME } from "@/common/constants.js";
-import { handlers as remoteStoreHandlers } from "./store/index.js";
+import { ipcMain } from 'electron';
+import logger from './logger.js';
+import { IPC_API_CHANNEL_NAME } from '@/common/constants.js';
+import { handlers as remoteStoreHandlers } from './store/index.js';
 
 const calculatorHandlers = {
   add(_, a, b) {
-    logger.debug("calculator::add called with args: ", a, b);
+    logger.debug('calculator::add called with args: ', a, b);
     return a + b;
-  }
-}
+  },
+};
 
 const allHandlers = {
   calculator: calculatorHandlers,
@@ -22,46 +22,46 @@ const allHandlers = {
 export function registerAPIHandlers() {
   /**
    * @callback
-   * @param {Electron.IpcMainInvokeEvent} event 
-   * @param  {...any} args 
+   * @param {Electron.IpcMainInvokeEvent} event
+   * @param  {...any} args
    */
   const handleIPCMessage = async (event, ...args) => {
     const [channel, ...handlerArgs] = args || [];
-    if (!channel || typeof channel !== "string") {
-      logger.error("Invalid IPC message received. Channel name is missing or invalid.");
+    if (!channel || typeof channel !== 'string') {
+      logger.error('Invalid IPC message received. Channel name is missing or invalid.');
       return;
     }
 
-    const [namespace, handlerName] = channel.split("::");
+    const [namespace, handlerName] = channel.split('::');
     if (!namespace || !handlerName) {
-      logger.error("Invalid IPC message received. Channel name is missing or invalid: ", channel);
+      logger.error('Invalid IPC message received. Channel name is missing or invalid: ', channel);
       return;
     }
 
     const /** @type {function} */ handler = allHandlers[namespace]?.[handlerName];
 
     if (!handler) {
-      logger.error("No handler found for the given channel: ", channel);
+      logger.error('No handler found for the given channel: ', channel);
       return;
     }
 
-    logger.debug("[ipc-api]", channel, handlerArgs);
+    logger.debug('[ipc-api]', channel, handlerArgs);
 
     const result = await handler(event, ...handlerArgs);
 
-    logger.debug("[ipc-api]", channel, "Done");
+    logger.debug('[ipc-api]', channel, 'Done');
 
     return result;
   };
 
   ipcMain.handle(IPC_API_CHANNEL_NAME, async (event, ...args) => {
-    return await handleIPCMessage(event, ...args)
+    return await handleIPCMessage(event, ...args);
   });
 
   ipcMain.on(IPC_API_CHANNEL_NAME, (event, ...args) => {
     handleIPCMessage(event, ...args)
-      .then(result => event.returnValue = result)
-      .catch(error => logger.error("Error handling IPC message", error));
+      .then((result) => (event.returnValue = result))
+      .catch((error) => logger.error('Error handling IPC message', error));
   });
 }
 

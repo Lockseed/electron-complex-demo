@@ -1,9 +1,6 @@
-export * from "./global.js";
+export * from './global.js';
 
-import events from "./events.js";
-import handlers from "./handlers.js";
+import events from './events.js';
+import handlers from './handlers.js';
 
-export {
-  events,
-  handlers,
-}
+export { events, handlers };

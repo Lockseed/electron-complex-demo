@@ -23,7 +23,7 @@
 
 关于 `vite` 配置文件:
 
-所有配置文件的 `target` 都设置为 `'esnext'` 毕竟打包出来的 `js` 文件只在 `electron` 内部运行，无需考虑浏览器兼容问题，所以只要做最小化的兼容就行。 
+所有配置文件的 `target` 都设置为 `'esnext'` 毕竟打包出来的 `js` 文件只在 `electron` 内部运行，无需考虑浏览器兼容问题，所以只要做最小化的兼容就行。
 
 同理 `format` 设置为 `['es']` 就好，无需考虑 `commonjs` 和 `umd` 的问题。
 
@@ -63,12 +63,12 @@
 vite 配置文件中需要重新设置 root 属性和相关的 build 配置。
 
 ```js
-import { join } from "node:path"
-import { defineConfig } from "vite";
+import { join } from 'node:path';
+import { defineConfig } from 'vite';
 
 export default defineConfig((incomingConfigs) => {
   const { mode, forgeConfigSelf } = incomingConfigs;
-  const name = forgeConfigSelf.name ?? "";
+  const name = forgeConfigSelf.name ?? '';
 
   // import.meta.dirname 指向当前配置文件所在的目录(无 file:// 前缀)
   // process.cwd() 指向当前工作目录(无 file:// 前缀)
@@ -80,10 +80,10 @@ export default defineConfig((incomingConfigs) => {
     root: dirname,
     mode,
     build: {
-      target: "esnext",
+      target: 'esnext',
       outDir,
-    }
-  }
+    },
+  };
 });
 ```
 
@@ -93,10 +93,10 @@ export default defineConfig((incomingConfigs) => {
 modules.exports = {
   plugins: [
     {
-      name: "@electron-forge/plugin-vite",
+      name: '@electron-forge/plugin-vite',
       config: {
         build: [
-          // main process 
+          // main process
         ],
         renderer: [
           {
@@ -106,19 +106,18 @@ modules.exports = {
           {
             name: 'secondary_window',
             config: 'src/renderer/secondary/vite.config.js',
-          }
+          },
         ],
-      }
-    }
-  ]
-}
+      },
+    },
+  ],
+};
 ```
 
 ### 分析打包后的文件
 
 分析打包后文件的组成有助于优化包体大小，有时候还能用于 `Debug` 一些问题。
 `Vite` 打包主要依赖 `rollup` ，所以这里使用 `rollup-plugin-visualizer` 来分析依赖占据的大小并提供可细化报告。
-
 
 ```js
 import { defineConfig } from 'vite';
@@ -135,7 +134,7 @@ export default defineConfig({
         NPM_COMMAND === 'report' ? visualizer({ filename: 'states-xxx.html' }) : null,
       ].filter(Boolean),
     },
-  }
+  },
 });
 ```
 
@@ -150,7 +149,6 @@ export default defineConfig({
   - 引入某些第三方库时能否正常进行类型推导 例如 `electron-store`。
   - 引入本地模块，例如 `import foo from './foo'` 时是否能自动解析到 `'./foo/index.js'`。
   - 引入 json 文件是否需要明确标注 `import someJson from './someJson.json' assert { type: "json" };`。
-
 
 ### 关于类型定义的技巧
 
@@ -181,8 +179,9 @@ type DescribableFunction = {
 触发内存溢出
 
 preload 中
+
 ```js
-import { generateString } from "@/common/utils.js";
+import { generateString } from '@/common/utils.js';
 
 let oomTimer;
 let memoryHog = [];
@@ -191,12 +190,12 @@ function triggerOOM() {
   if (oomTimer) return; // 避免重复启动
 
   oomTimer = setInterval(async () => {
-  // 这里生成的数据类型使用的时字符串，而不是 ArrayBuffer，
-  // 因为 preolaod 里面的 ArrayBuffer 很可能是由 Node 在管理，而不是 V8
-  // 而我们的目标是触发 V8 的 OOM
-  // 期望是每次循环涨 10M 内存，按 UTF16 计算，一个字符占用 2 字节
-  // 10M 内存 = (10 * 1024 * 1024 / 2) 个字符
-  memoryHog.push(generateString(10 * 1024 * 1024 / 2));
+    // 这里生成的数据类型使用的时字符串，而不是 ArrayBuffer，
+    // 因为 preolaod 里面的 ArrayBuffer 很可能是由 Node 在管理，而不是 V8
+    // 而我们的目标是触发 V8 的 OOM
+    // 期望是每次循环涨 10M 内存，按 UTF16 计算，一个字符占用 2 字节
+    // 10M 内存 = (10 * 1024 * 1024 / 2) 个字符
+    memoryHog.push(generateString((10 * 1024 * 1024) / 2));
   }, 1000); // 每秒执行一次
 }
 ```
@@ -215,13 +214,15 @@ async function momoryUsage() {
 
   const memUsed = memInfo.private;
   const memTotal = heapStats.heapSizeLimit;
-  const memUsedPercent = (memUsed / memTotal * 100).toFixed(2);
+  const memUsedPercent = ((memUsed / memTotal) * 100).toFixed(2);
 
   const heapUsed = heapStats.usedHeapSize;
   const heapTotal = heapStats.totalHeapSize;
-  const heapUsedPercent = (heapUsed / heapTotal * 100).toFixed(2);
+  const heapUsedPercent = ((heapUsed / heapTotal) * 100).toFixed(2);
 
-  console.log(`Memory Usage: ${kb2mb(memUsed)}MB / ${kb2mb(memTotal)}MB, ${memUsedPercent}%\nHeap   Usage: ${kb2mb(heapUsed)}MB / ${kb2mb(heapTotal)}MB, ${heapUsedPercent}%`);
+  console.log(
+    `Memory Usage: ${kb2mb(memUsed)}MB / ${kb2mb(memTotal)}MB, ${memUsedPercent}%\nHeap   Usage: ${kb2mb(heapUsed)}MB / ${kb2mb(heapTotal)}MB, ${heapUsedPercent}%`
+  );
 }
 ```
 
@@ -259,7 +260,7 @@ npm install -D @vitejs/plugin-vue vite-plugin-vue-devtools
 ```js
 //...
 import vue from '@vitejs/plugin-vue';
-import vueDevTools from 'vite-plugin-vue-devtools'
+import vueDevTools from 'vite-plugin-vue-devtools';
 
 export default defineConfig((incomingConfigs) => {
   // ...
@@ -272,7 +273,7 @@ export default defineConfig((incomingConfigs) => {
       //...
     ].filter(Boolean),
     //...
-  }
+  };
 });
 ```
 
@@ -291,7 +292,7 @@ Tailwind CSS 框架近几年很流行，本质上可以说是个 postcss 插件�
 安装：
 
 ```zsh
-npm install -D tailwindcss @tailwindcss/vite 
+npm install -D tailwindcss @tailwindcss/vite
 ```
 
 然后在 renderer 窗口的 vite.config.js 中添加相关 plugin：
@@ -309,15 +310,15 @@ export default defineConfig((incomingConfigs) => {
       //...
     ].filter(Boolean),
     //...
-  }
+  };
 });
 ```
 
 V4 版本不太依赖于 js 配置文件了，所以一般的配置项都放在 css 文件里，比如放在 `src/renderer/css/tailwind.css`:
 
 ```css
-@import "tailwindcss";
-@source "${root}/src/renderer/**/*.{vue,js,jsx,tsx,html}"
+@import 'tailwindcss';
+@source "${root}/src/renderer/**/*.{vue,js,jsx,tsx,html}";
 ```
 
 剩下的就是在前端入口文件 main.js 中引入相关的 css 了。
@@ -337,13 +338,9 @@ export default defineConfig((incomingConfigs) => {
     //...
     // 启动时主动预构建核心依赖
     optimizeDeps: {
-      include: [
-        'vue',
-        'vue-router',
-        'pinia'
-      ]
-    }
-  }
+      include: ['vue', 'vue-router', 'pinia'],
+    },
+  };
 });
 ```
 
@@ -364,4 +361,3 @@ export default defineConfig((incomingConfigs) => {
 比如升级到 `vite@7` 之后，`vite-plugin-vue-devtools` 和 `@electron-forge/xxx` 系列依赖都需要升级才能支持 `vite@7` 。
 
 同时，在 `package.json` 中改了核心依赖的版本之后，执行 `npm install` 之前一定要删除 `package-lock.json` 文件，不然 `npm` 还是会安装记录的旧版本。
-

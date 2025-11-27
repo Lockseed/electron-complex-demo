@@ -30,11 +30,14 @@ console.log(`Current Node.js version: ${currentVersion}`);
 
 // 使用 semver 比较版本
 if (!semver.satisfies(currentVersion, nodeVersionRequirement)) {
-  console.error('\x1b[31m%s\x1b[0m', `
+  console.error(
+    '\x1b[31m%s\x1b[0m',
+    `
 Error: Node.js version mismatch.
 This project requires Node.js ${nodeVersionRequirement}.
 Please run 'nvm use' or 'nvm install' with an appropriate version before continuing.
-  `);
+  `
+  );
   process.exit(1);
 } else {
   console.log('Node.js version matches requirements, proceeding...');

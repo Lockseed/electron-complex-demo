@@ -1,16 +1,16 @@
-import process from "node:process";
-import { app, dialog, clipboard } from "electron";
-import { t } from "i18next";
+import process from 'node:process';
+import { app, dialog, clipboard } from 'electron';
+import { t } from 'i18next';
 
-import logger from "./logger.js";
-import { anyToString } from "@/common/utils.js";
-import { toLogFormat } from "@/common/errors.js";
+import logger from './logger.js';
+import { anyToString } from '@/common/utils.js';
+import { toLogFormat } from '@/common/errors.js';
 
 let installed = false;
 
 /**
- * @param {string} title 
- * @param {Error} err 
+ * @param {string} title
+ * @param {Error} err
  */
 function handleError(title, err) {
   const formattedError = toLogFormat(err);
@@ -37,7 +37,7 @@ function handleError(title, err) {
 
 /**
  * 将任意类型的 rejection value 转换为 Error 对象
- * @param {unknown} reason 
+ * @param {unknown} reason
  * @returns {Error}
  */
 function _toError(reason) {
@@ -64,19 +64,22 @@ export function captureUnhandledRejection() {
     handleError('Unhandled Rejection', _toError(reason));
   });
 
-  app.on("render-process-gone", (_, contents, { reason, exitCode }) => {
-    if (reason === "clean-exit") {
+  app.on('render-process-gone', (_, contents, { reason, exitCode }) => {
+    if (reason === 'clean-exit') {
       return;
     }
 
-    let url = "[UNKNOWN]";
+    let url = '[UNKNOWN]';
     try {
       url = contents.getURL();
     } catch (_) {
       // ignore
     }
 
-    handleError("Render Process Gone", new Error(`Reason: ${reason}, Exit Code: ${exitCode}, URL: ${url}`));
+    handleError(
+      'Render Process Gone',
+      new Error(`Reason: ${reason}, Exit Code: ${exitCode}, URL: ${url}`)
+    );
   });
 
   installed = true;

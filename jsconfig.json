@@ -8,7 +8,7 @@
     "module": "NodeNext",
     "paths": {
       "@/*": ["./src/*"]
-    },
+    }
   },
   "exclude": [
     "dist",

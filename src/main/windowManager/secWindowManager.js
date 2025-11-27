@@ -2,11 +2,11 @@ import { EventEmitter } from 'node:events';
 import path from 'node:path';
 import { BrowserWindow } from 'electron';
 
-import logger from '../logger';
-import isDev from '../isDev';
-import { appIsQuitting } from '../beforeQuitTasks';
-import { isWindows, isMacOS } from '../utils';
-import { showWindow, hideWindow } from './windowHelpers';
+import logger from '../logger.js';
+import isDev from '../isDev.js';
+import { appIsQuitting } from '../beforeQuitTasks.js';
+import { isWindows, isMacOS } from '../utils.js';
+import { showWindow, hideWindow } from './windowHelpers.js';
 
 export const secondaryWindowEventBus = new EventEmitter();
 
@@ -20,7 +20,7 @@ let /** @type {(value:Electron.BrowserWindow) => void} */ resolveSecWindowCreate
  * @returns {Electron.BrowserWindow}
  */
 function createSecWindow() {
-  logger.info("Creating secondary window...");
+  logger.info('Creating secondary window...');
 
   const resolvers = Promise.withResolvers();
   secondaryWindowCreated = resolvers.promise;
@@ -46,12 +46,14 @@ function createSecWindow() {
   });
 
   _bindEvents(secondaryWindow);
-  
+
   // and load the index.html of the app.
   if (SECONDARY_WINDOW_VITE_DEV_SERVER_URL) {
     secondaryWindow.loadURL(SECONDARY_WINDOW_VITE_DEV_SERVER_URL);
   } else {
-    secondaryWindow.loadFile(path.join(import.meta.dirname, `../renderer/${SECONDARY_WINDOW_VITE_NAME}/index.html`));
+    secondaryWindow.loadFile(
+      path.join(import.meta.dirname, `../renderer/${SECONDARY_WINDOW_VITE_NAME}/index.html`)
+    );
   }
 
   // Open the DevTools.
@@ -59,7 +61,7 @@ function createSecWindow() {
 
   resolveSecWindowCreate(secondaryWindow);
 
-  logger.info("Secondary window created.");
+  logger.info('Secondary window created.');
   return secondaryWindow;
 }
 
@@ -96,8 +98,8 @@ export async function hideSecWindow() {
 }
 
 /**
- * 
- * @param {Electron.BrowserWindow} win 
+ *
+ * @param {Electron.BrowserWindow} win
  */
 function _bindEvents(win) {
   win.on('ready-to-show', () => {

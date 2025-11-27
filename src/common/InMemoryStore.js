@@ -1,6 +1,6 @@
-import { getProperty, setProperty, hasProperty, deleteProperty } from "./dotPathProps.js";
-import { isPlainObject } from "./utils.js";
-import { isEqual, cloneDeep } from "lodash-es";
+import { getProperty, setProperty, hasProperty, deleteProperty } from './dotPathProps.js';
+import { isPlainObject } from './utils.js';
+import { isEqual, cloneDeep } from 'lodash-es';
 
 function createPlainObject() {
   return Object.create(null);
@@ -19,7 +19,7 @@ export default class InMemoryStore {
   constructor(options = {}) {
     this.#defaultStore = Object.assign(createPlainObject(), options.defaults);
     this.#store = Object.assign(createPlainObject(), options.defaults);
-    console.log("[InMemoryStore] Created", this.#store);
+    console.log('[InMemoryStore] Created', this.#store);
   }
 
   get store() {
@@ -28,23 +28,23 @@ export default class InMemoryStore {
 
   set store(newStore) {
     this.#store = Object.assign(createPlainObject(), newStore);
-    this.#events.dispatchEvent(new Event("change"));
+    this.#events.dispatchEvent(new Event('change'));
   }
 
   /**
-   * 
-   * @param {string} key 
-   * @param {any} defaultValue 
-   * @returns 
+   *
+   * @param {string} key
+   * @param {any} defaultValue
+   * @returns
    */
   get(key, defaultValue) {
     return getProperty(this.#store, key, defaultValue);
   }
 
   /**
-   * 
-   * @param {string | Object} keyOrObj 
-   * @param {any} value 
+   *
+   * @param {string | Object} keyOrObj
+   * @param {any} value
    */
   set(keyOrObj, value) {
     if (isPlainObject(keyOrObj)) {
@@ -54,13 +54,13 @@ export default class InMemoryStore {
     } else {
       setProperty(this.#store, keyOrObj, value);
     }
-    this.#events.dispatchEvent(new Event("change"));
+    this.#events.dispatchEvent(new Event('change'));
   }
 
   /**
-   * 
-   * @param {string} key 
-   * @returns 
+   *
+   * @param {string} key
+   * @returns
    */
   has(key) {
     return hasProperty(this.#store, key);
@@ -81,35 +81,35 @@ export default class InMemoryStore {
   }
 
   /**
-   * 
-   * @param {string} key 
-   * @param {(newValue: any, oldValue: any) => void} callback 
+   *
+   * @param {string} key
+   * @param {(newValue: any, oldValue: any) => void} callback
    */
   watch(key, callback) {
-    if (typeof key !== "string") {
-      throw new TypeError("Invalid key");
+    if (typeof key !== 'string') {
+      throw new TypeError('Invalid key');
     }
-    if (typeof callback !== "function") {
-      throw new TypeError("Invalid callback");
+    if (typeof callback !== 'function') {
+      throw new TypeError('Invalid callback');
     }
     return this.#handleChange(() => this.get(key), callback);
   }
 
   /**
-   * 
-   * @param {(newValue: any, oldValue: any) => void} callback 
+   *
+   * @param {(newValue: any, oldValue: any) => void} callback
    */
   watchAll(callback) {
-    if (typeof callback !== "function") {
-      throw new TypeError("Invalid callback");
+    if (typeof callback !== 'function') {
+      throw new TypeError('Invalid callback');
     }
     return this.#handleChange(() => this.#store, callback);
   }
 
   /**
-   * 
-   * @param {() => any} getter 
-   * @param {(newValue: any, oldValue: any) => void} callback 
+   *
+   * @param {() => any} getter
+   * @param {(newValue: any, oldValue: any) => void} callback
    * @returns {() => void}
    */
   #handleChange(getter, callback) {
@@ -122,13 +122,13 @@ export default class InMemoryStore {
       }
       oldValue = newValue;
       callback.call(this, newValue, oldValue);
-    }
+    };
 
-    this.#events.addEventListener("change", onChange);
+    this.#events.addEventListener('change', onChange);
 
     return () => {
-      this.#events.removeEventListener("change", onChange);
-    }
+      this.#events.removeEventListener('change', onChange);
+    };
   }
 
   *[Symbol.iterator]() {

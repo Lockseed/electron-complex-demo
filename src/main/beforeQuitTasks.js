@@ -8,11 +8,11 @@ const beforeQuitTasks = [];
 
 /**
  * 将需要在 App 退出前执行的任务统一放在这里
- * @param {()=>void|Promise<any>} task 
+ * @param {()=>void|Promise<any>} task
  */
 export function registerBeforeQuitTask(task) {
   beforeQuitTasks.push(task);
-};
+}
 
 export let appIsQuitting = false;
 
@@ -23,7 +23,7 @@ app.on('before-quit', async () => {
     try {
       await task();
     } catch (error) {
-      logger.error("Run before quit task error", error?.message);
+      logger.error('Run before quit task error', error?.message);
     }
   }
 });

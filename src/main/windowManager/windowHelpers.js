@@ -1,11 +1,11 @@
-import logger from "../logger.js";
-import handleUrl from "../handleUrl.js";
-import { toLogFormat } from "@/common/errors.js";
-import { tryParseUrl } from "../utils.js";
+import logger from '../logger.js';
+import handleUrl from '../handleUrl.js';
+import { toLogFormat } from '@/common/errors.js';
+import { tryParseUrl } from '../utils.js';
 
 /**
- * 
- * @param {Electron.WebContents} webContents 
+ *
+ * @param {Electron.WebContents} webContents
  */
 export const waitTileCanExecuteJavascript = async (webContents) => {
   if (webContents.getURL() && !webContents.isLoadingMainFrame()) {
@@ -16,12 +16,12 @@ export const waitTileCanExecuteJavascript = async (webContents) => {
     webContents.once('did-stop-loading', () => {
       resolve();
     });
-  })
+  });
 };
 
 /**
  * 显示窗口 处理一些特殊情况。
- * @param {Electron.BrowserWindow} win 
+ * @param {Electron.BrowserWindow} win
  */
 export function showWindow(win) {
   if (!win || win.isDestroyed()) return;
@@ -42,7 +42,7 @@ export function showWindow(win) {
 
 /**
  * 隐藏窗口 处理一些特殊情况。
- * @param {Electron.BrowserWindow} win 
+ * @param {Electron.BrowserWindow} win
  */
 export function hideWindow(win) {
   if (!win || win.isDestroyed()) return;
@@ -55,11 +55,10 @@ export function hideWindow(win) {
   } else {
     win.hide();
   }
-
 }
 
 export function isInternalUrl(url) {
-  if (!url || typeof url !== "string") {
+  if (!url || typeof url !== 'string') {
     return false;
   }
   const parsedUrl = tryParseUrl(url);
@@ -70,8 +69,8 @@ export function isInternalUrl(url) {
   const { protocol, hostname } = parsedUrl;
 
   // 开发模式的 HMR 无需特殊处理
-  if (protocol === "http:" || protocol === "https:") {
-    if (hostname === "localhost") {
+  if (protocol === 'http:' || protocol === 'https:') {
+    if (hostname === 'localhost') {
       return true;
     }
   }
@@ -82,12 +81,12 @@ export function isInternalUrl(url) {
 /**
  * 进行一些一般业务窗口创建后的统一处理
  * 例如组织跳转和导航的默认行为，等
- * @param {Electron.BrowserWindow} window 
- * @param {string} windowName 
+ * @param {Electron.BrowserWindow} window
+ * @param {string} windowName
  */
 export function handleWindowCreated(window, windowName) {
   logger.info(`[handleWindowCreated] Handle ${windowName} created.`);
-  window.webContents.on("will-navigate", (event, url) => {
+  window.webContents.on('will-navigate', (event, url) => {
     logger.debug(`[willNavigate][${windowName}] url: ${url}`);
 
     if (isInternalUrl(url)) {
@@ -102,10 +101,13 @@ export function handleWindowCreated(window, windowName) {
     logger.debug(`[windowOpenHandler][${windowName}] url: ${url}, disposition: ${disposition}`);
 
     handleUrl(url).catch((_) => {});
-    return { action: "deny" }
+    return { action: 'deny' };
   });
 
-  window.webContents.on("preload-error", (_, preloadPath, error) => {
-    logger.error(`[preloadError][${windowName}] preload error in ${preloadPath}`, toLogFormat(error));
+  window.webContents.on('preload-error', (_, preloadPath, error) => {
+    logger.error(
+      `[preloadError][${windowName}] preload error in ${preloadPath}`,
+      toLogFormat(error)
+    );
   });
 }
