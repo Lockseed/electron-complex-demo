@@ -353,3 +353,15 @@ export default defineConfig((incomingConfigs) => {
 2. 在 `.nvmrc` 文件中规定一个具体的使用版本，通过 `nvm use` 命令切换。
 3. `package.json` 中增加一个 `preinstall script`，在 `npm install` 之前运行，校验版本。
 4. `preinstall` 脚本详见 `checkNodeVersion.js`。
+
+### 核心依赖版本升级
+
+升级 `electron`，`vite` 等核心依赖，需要注意：
+
+1. `node` 版本升级对其他依赖会有影响。
+2. `peer dependency` 会有冲突。
+
+比如升级到 `vite@7` 之后，`vite-plugin-vue-devtools` 和 `@electron-forge/xxx` 系列依赖都需要升级才能支持 `vite@7` 。
+
+同时，在 `package.json` 中改了核心依赖的版本之后，执行 `npm install` 之前一定要删除 `package-lock.json` 文件，不然 `npm` 还是会安装记录的旧版本。
+
