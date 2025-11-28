@@ -361,3 +361,74 @@ export default defineConfig((incomingConfigs) => {
 比如升级到 `vite@7` 之后，`vite-plugin-vue-devtools` 和 `@electron-forge/xxx` 系列依赖都需要升级才能支持 `vite@7` 。
 
 同时，在 `package.json` 中改了核心依赖的版本之后，执行 `npm install` 之前一定要删除 `package-lock.json` 文件，不然 `npm` 还是会安装记录的旧版本。
+
+### IDE TS Server 崩溃问题
+
+开发中观察到 `VS Code` 的语言解析始终在加载中（转圈），点开查看详细情况发现一直卡在“正在加载 IntelliSense“ ，尝试重启窗口后，只要在 `js` 文件编辑状态打开 `Copilot Chat` 界面又会出现同样的问题，并且还可能出现 “在过去5 分钟内，JS/TS 语言服务崩溃了5 次。 这可能是由以下其中一个扩展提供的插件引起的: Vue.volar 请在针对VS Code 提交问题之前尝试禁用这些扩展。“ 的提示。
+
+在网上搜索后，做如下处理：
+
+1. 将 `Vue.Volar` 插件升到最新版。
+2. 将 `Max TS Server Memory` 配置值改大，我这里改到了 `6144` 。
+3. 重启 `VS Code` 。
+
+目前一切正常，没有再次出现这个问题。
+
+### 使用 ES Lint 和 Prettier
+
+为了更好的规范代码质量，引入 ESLint 和 Prettier 。
+
+#### 所需依赖
+
+- `eslint` - JavaScript 代码检查工具，检测代码质量问题
+- `@eslint/js` - ESLint 官方推荐的 JavaScript 规则集
+- `eslint-plugin-vue` - Vue.js 文件的 ESLint 插件，支持 Vue 语法检查
+- `prettier` - 代码格式化工具，统一代码风格
+- `eslint-config-prettier` - 禁用与 Prettier 冲突的 ESLint 规则
+
+#### 各类配置
+
+- `eslint.config.mjs` - ESLint 主配置文件，定义检查规则和环境配置
+- `.prettierrc` - Prettier 格式化配置，定义代码风格规则
+- `.prettierignore` - Prettier 忽略文件配置，排除不需要格式化的文件
+- `.vscode/settings.json` - VS Code 编辑器配置，实现保存时自动格式化和修复
+- `package.json` 中的 scripts - 添加代码检查和格式化命令
+
+#### ES Lint 配置实例
+
+```js
+export default [
+  {
+    // 忽略掉生成目录、编辑器配置和临时缓存
+    ignores: ['**/node_modules/**', '**/.vite/**', '**/dist/**', '**/.temp/**', 'states-*.html'],
+  },
+  {
+    files: ['**/*.js', '**/*.cjs', '**/*.mjs'],
+    ...js.configs.recommended,
+    languageOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'module',
+    },
+    rules: {
+      'no-unused-vars': [
+        'warn',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
+        },
+      ],
+      'no-console': 'off',
+    },
+  },
+  ...pluginVue.configs['flat/strongly-recommended'],
+  {
+    rules: {
+      'vue/multi-word-component-names': 'off',
+      'vue/no-v-html': 'off',
+    },
+  },
+  // Prettier 配置用于禁用与格式化冲突的规则
+  prettier,
+];
+```
