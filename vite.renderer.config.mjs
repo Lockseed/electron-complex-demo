@@ -1,4 +1,7 @@
-// 此文件暂时无用，实际使用的 renderer 配置文件在各个前端页面文件夹下
+// Historical example only. Electron Forge does not read this file.
+// Actual renderer configs live in:
+// - src/renderer/main/vite.config.js
+// - src/renderer/secondary/vite.config.js
 import { join } from 'node:path';
 import { defineConfig } from 'vite';
 
