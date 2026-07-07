@@ -149,7 +149,8 @@ Other safety mechanisms:
 2. Export it through `allWorkerHandlers` in `src/worker/handlers.js`.
 3. Keep arguments/results serializable.
 4. Use it from renderer through the generated worker remote API.
-5. Verify with packaging because worker bundles are separate Forge/Vite targets.
+5. Add or update focused unit tests when the worker logic can be tested without launching Electron.
+6. Verify with packaging because worker bundles are separate Forge/Vite targets.
 
 ### Add a renderer route or view
 

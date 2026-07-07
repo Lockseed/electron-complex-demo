@@ -97,15 +97,33 @@ tsc --noEmit -p jsconfig.json && tsc --noEmit -p src/renderer/jsconfig.json
 
 The root config checks main, preload, worker, and shared JavaScript with `checkJs`. The renderer config currently checks renderer declarations and module resolution, but keeps renderer JavaScript `checkJs` disabled.
 
+### `npm test`
+
+Runs:
+
+```sh
+vitest run
+```
+
+The current unit test baseline covers:
+
+- `src/common/dotPathProps.js`
+- `src/common/InMemoryStore.js`
+- `src/preload/utils.js`
+
+### `npm run test:watch`
+
+Runs Vitest in watch mode for local development.
+
 ### `npm run verify`
 
 Runs:
 
 ```sh
-npm run format:check && npm run lint && npm run typecheck
+npm run format:check && npm run lint && npm run typecheck && npm test
 ```
 
-This is the current minimum verification path. It does not run tests because a test script does not exist yet.
+This is the current minimum verification path.
 
 ### `npm run verify:package`
 
@@ -123,13 +141,11 @@ These remain intentionally unimplemented until the matching tools and configs ex
 
 ```json
 {
-  "test": "vitest run",
-  "test:watch": "vitest",
   "test:e2e": "playwright test"
 }
 ```
 
-When `test` exists, expand `verify` to include it.
+When `test:e2e` exists, document when to use it. Do not add it to the default `verify` path unless it is fast and stable enough for every local change.
 
 Current baseline:
 

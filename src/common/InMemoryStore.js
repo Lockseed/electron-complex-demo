@@ -120,8 +120,9 @@ export default class InMemoryStore {
       if (isEqual(oldValue, newValue)) {
         return;
       }
+      const previousValue = oldValue;
       oldValue = newValue;
-      callback.call(this, newValue, oldValue);
+      callback.call(this, newValue, previousValue);
     };
 
     this.#events.addEventListener('change', onChange);

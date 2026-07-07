@@ -37,6 +37,7 @@ Electron Forge reads `forge.config.mjs`.
 - Lint: `npm run lint`
 - Format check: `npm run format:check`
 - Type check: `npm run typecheck`
+- Test: `npm test`
 - Baseline verification: `npm run verify`
 - Package app directory: `npm run package`
 - Analyze package: `npm run package:analyze`
@@ -103,4 +104,4 @@ Treat `package-lock.json` as source of truth unless explicitly changing dependen
 
 ## Current Gaps
 
-The repository currently has no test script. `npm run verify` means format check plus lint plus typecheck.
+The repository currently has a unit test baseline, but no Electron end-to-end smoke test. `npm run verify` means format check plus lint plus typecheck plus unit tests.
