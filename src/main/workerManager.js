@@ -62,6 +62,11 @@ export function setupWorkerProcess() {
 }
 
 const mainProcessSideImplementation = {
+  /**
+   *
+   * @param {"home" | "appData" | "assets" | "userData" | "sessionData" | "temp" | "exe" | "module" | "desktop" | "documents" | "downloads" | "music" | "pictures" | "videos" | "recent" | "logs" | "crashDumps"} name
+   * @returns
+   */
   getPath(name) {
     console.log('[workerManager][setupWorkerProcess] getPath', name);
     return app.getPath(name);
@@ -78,7 +83,7 @@ export function createRpcMainSide(worker) {
   return AsyncCall(mainProcessSideImplementation, {
     channel: {
       on(listener) {
-        const f = (data) => listener(data);
+        const f = (/** @type {unknown} */ data) => listener(data);
         worker.on('message', f);
         return () => {
           worker.off('message', f);
