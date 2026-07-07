@@ -7,7 +7,7 @@ Use this guide to choose the right verification path after a change.
 Run:
 
 ```sh
-npm run format:check
+npm run verify
 ```
 
 If the docs mention commands, paths, or generated files, also run the relevant read-only command such as `npm run` or `rg`.
@@ -17,11 +17,10 @@ If the docs mention commands, paths, or generated files, also run the relevant r
 Run:
 
 ```sh
-npm run lint
-npm run format:check
+npm run verify
 ```
 
-There is currently no `test`, `typecheck`, or `verify` script.
+`npm run verify` currently runs format check plus lint. There is not yet a test or typecheck script.
 
 ## Electron Boundary Changes
 
@@ -40,9 +39,7 @@ For changes touching these areas, run the baseline plus `npm run package`:
 Command:
 
 ```sh
-npm run lint
-npm run format:check
-npm run package
+npm run verify:package
 ```
 
 `npm run package` may need network access. A known failure mode is DNS/network failure for registry or Electron download hosts, for example `getaddrinfo ENOTFOUND npmmirror.com`.
@@ -73,11 +70,12 @@ Stop the dev process when finished.
 Run:
 
 ```sh
-npm run package
+npm run verify:package
 ```
 
 Expected result:
 
+- Format check and lint pass.
 - Vite builds main, preload, worker, and renderer targets.
 - Electron Forge packages for the local platform.
 - Output appears under `out/`.

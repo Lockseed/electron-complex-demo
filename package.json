@@ -11,14 +11,18 @@
   "scripts": {
     "preinstall": "node scripts/checkNodeVersion.cjs",
     "dev": "electron-forge start",
+    "build": "electron-forge package",
     "package": "electron-forge package",
+    "package:analyze": "npm run report",
     "report": "electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write \"**/*.{js,mjs,cjs,vue,json,html,css,md}\"",
-    "format:check": "prettier --check \"**/*.{js,mjs,cjs,vue,json,html,css,md}\""
+    "format:check": "prettier --check \"**/*.{js,mjs,cjs,vue,json,html,css,md}\"",
+    "verify": "npm run format:check && npm run lint",
+    "verify:package": "npm run verify && npm run package"
   },
   "devDependencies": {
     "@electron-forge/cli": "^7.9.0",

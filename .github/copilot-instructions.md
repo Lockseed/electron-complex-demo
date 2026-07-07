@@ -9,7 +9,7 @@ Key rules:
 - Preload must not expose `ipcRenderer` directly.
 - Keep BrowserWindow security settings enabled: `sandbox: true`, `contextIsolation: true`, `nodeIntegration: false`, and `nodeIntegrationInWorker: false`.
 - Actual renderer Vite configs live under `src/renderer/*/vite.config.js`; root `vite.renderer.config.mjs` is a historical example only.
-- Run `npm run lint` and `npm run format:check` before finishing ordinary changes.
-- For Electron process, preload, worker, Forge, or packaging changes, also run `npm run package`.
+- Run `npm run verify` before finishing ordinary changes.
+- For Electron process, preload, worker, Forge, or packaging changes, also run `npm run verify:package`.
 
 For Vue, Tailwind, and daisyUI work, also follow `.github/instructions/daisyui.instructions.md`.

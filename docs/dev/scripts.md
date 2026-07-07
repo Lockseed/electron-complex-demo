@@ -23,6 +23,12 @@ Manual checks:
 - Terminal does not show `APP_INIT_ERROR`.
 - Basic routing in the main renderer works.
 
+### `npm run build`
+
+Runs `electron-forge package`.
+
+This is a conventional alias for production packaging so humans and AI agents have a familiar build entry point.
+
 ### `npm run package`
 
 Runs `electron-forge package`.
@@ -30,6 +36,12 @@ Runs `electron-forge package`.
 This builds main, preload, worker, and renderer Vite bundles, then packages the app directory under `out/`.
 
 This command may need network access for Electron/Forge downloads or native dependency preparation.
+
+### `npm run package:analyze`
+
+Runs `npm run report`.
+
+Use this clearer alias when you want bundle visualizer output. It intentionally delegates to `report` because the current Vite configs enable `rollup-plugin-visualizer` when the npm lifecycle event is `report`.
 
 ### `npm run report`
 
@@ -75,33 +87,49 @@ Runs Prettier check mode.
 
 This is part of the baseline verification path for every change.
 
-## Missing But Recommended Scripts
+### `npm run verify`
 
-These are intentionally documented before implementation so future script changes have a clear target.
+Runs:
+
+```sh
+npm run format:check && npm run lint
+```
+
+This is the current minimum verification path. It does not run tests or type checks because those scripts do not exist yet.
+
+### `npm run verify:package`
+
+Runs:
+
+```sh
+npm run verify && npm run package
+```
+
+Use this for Electron process, preload, worker, Forge, packaging, or IPC changes.
+
+## Future Recommended Scripts
+
+These remain intentionally unimplemented until the matching tools and configs exist.
 
 ```json
 {
-  "build": "electron-forge package",
   "typecheck": "tsc --noEmit -p jsconfig.json",
   "test": "vitest run",
   "test:watch": "vitest",
-  "test:e2e": "playwright test",
-  "verify": "npm run format:check && npm run lint && npm run typecheck && npm test",
-  "verify:package": "npm run verify && npm run package"
+  "test:e2e": "playwright test"
 }
 ```
 
-Add these in phases after the matching tools and configs exist.
+When `typecheck` and `test` exist, expand `verify` to include them.
 
-Until then, the working baseline is:
+Current baseline:
 
 ```sh
-npm run lint
-npm run format:check
+npm run verify
 ```
 
 For Electron process-boundary changes, also run:
 
 ```sh
-npm run package
+npm run verify:package
 ```

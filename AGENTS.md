@@ -31,23 +31,24 @@ Electron Forge reads `forge.config.mjs`.
 
 - Install: `npm ci`
 - Dev: `npm run dev`
+- Build/package app directory: `npm run build`
 - Lint: `npm run lint`
 - Format check: `npm run format:check`
+- Baseline verification: `npm run verify`
 - Package app directory: `npm run package`
-- Analyze package: `npm run report`
+- Analyze package: `npm run package:analyze`
 - Make installers/packages: `npm run make`
 
 Before finishing ordinary code or docs changes, run:
 
 ```sh
-npm run lint
-npm run format:check
+npm run verify
 ```
 
 For Electron startup, preload, IPC, worker, Forge, or packaging changes, also run:
 
 ```sh
-npm run package
+npm run verify:package
 ```
 
 `npm run package` may need network access for Electron/Forge downloads or native dependency preparation.
@@ -99,4 +100,4 @@ Treat `package-lock.json` as source of truth unless explicitly changing dependen
 
 ## Current Gaps
 
-The repository currently has no test, typecheck, or aggregate verify script. Until those are added, use `npm run lint`, `npm run format:check`, and targeted manual Electron checks as the baseline.
+The repository currently has no test or typecheck script. Until those are added, `npm run verify` means format check plus lint.
