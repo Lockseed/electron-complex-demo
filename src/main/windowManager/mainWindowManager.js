@@ -1,6 +1,6 @@
 import { EventEmitter } from 'node:events';
 import path from 'node:path';
-import { BrowserWindow } from 'electron';
+import { BrowserWindow, dialog } from 'electron';
 
 import logger from '../logger.js';
 import isDev from '../isDev.js';
@@ -142,6 +142,23 @@ function _bindEvents(win) {
 
   win.webContents.on('did-finish-load', () => {
     connectWorkerToRenderer(win.webContents);
+  });
+
+  win.webContents.on('unresponsive', async () => {
+    logger.error('Main window unresponsive detected.');
+    const { response } = await dialog.showMessageBox(win, {
+      title: 'Window Unresponsive',
+      message: 'The main window is not responding. Do you want to reload it?',
+      buttons: ['Reload', 'Ignore'],
+      defaultId: 0,
+      cancelId: 1,
+    });
+
+    logger.info('User response to unresponsive dialog:', response);
+    if (response === 0) {
+      win.webContents.forcefullyCrashRenderer();
+      win.webContents.reload();
+    }
   });
 }
 

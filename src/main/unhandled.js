@@ -82,5 +82,12 @@ export function captureUnhandledRejection() {
     );
   });
 
+  app.on('child-process-gone', (_, details) => {
+    handleError(
+      'Child Process Gone',
+      new Error(`Type: ${details.type}, Reason: ${details.reason}, Exit Code: ${details.exitCode}`)
+    );
+  });
+
   installed = true;
 }
