@@ -11,6 +11,14 @@
  */
 
 /**
+ * @typedef {import("./remote-contracts.js").RemoteAPIMap} RemoteAPIMap
+ * @typedef {import("./remote-contracts.js").RemoteEventMap} RemoteEventMap
+ * @typedef {import("./remote-contracts.js").RemoteAPIs} RemoteAPIs
+ * @typedef {import("./remote-contracts.js").RemoteEvents} RemoteEvents
+ * @typedef {import("./remote-contracts.js").RemoteStores} RemoteStores
+ */
+
+/**
  * @typedef {Object} RpcMainToWorkerAsyncCalls
  * @property {(name: string) => string} getPath
  */

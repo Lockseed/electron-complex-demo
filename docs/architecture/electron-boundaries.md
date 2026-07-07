@@ -55,6 +55,8 @@ It exposes these renderer globals:
 
 Preload may import `electron` and use `ipcRenderer`, but it must not expose `ipcRenderer` itself. Exposed values should be narrow callable functions or subscription functions.
 
+The shared TypeScript contract for these globals lives in `src/common/remote-contracts.d.ts`. The renderer-facing `Window` augmentation lives in `src/renderer/global.d.ts`.
+
 ## Renderer
 
 Main renderer starts at `src/renderer/main/main.js`.
@@ -138,8 +140,8 @@ Other safety mechanisms:
 2. Export it through `allHandlers` in `src/main/handlers.js`.
 3. Validate inputs before native work.
 4. Use it from renderer through `window.__remoteAPIs.namespace.method()`.
-5. Update preload global docs/types when available.
-6. Verify with `npm run lint`, `npm run format:check`, and `npm run package` for boundary changes.
+5. Update `src/common/remote-contracts.d.ts` and `src/renderer/global.d.ts` if the exposed interface changes.
+6. Verify with `npm run verify`, or `npm run verify:package` for boundary changes.
 
 ### Add a worker function
 

@@ -13,15 +13,21 @@ const mainAPIs = genMainProcessAPIs();
 const mainEvents = genMainProcessEvents();
 const { apis: workerAPIs, events: workerEvents } = genWorkerProcessApiAndEvent();
 
-const remoteAPIs = {
-  ...mainAPIs,
-  ...workerAPIs,
-};
+/** @type {import("../common/remote-contracts.js").RemoteAPIs} */
+const remoteAPIs = /** @type {import("../common/remote-contracts.js").RemoteAPIs} */ (
+  /** @type {unknown} */ ({
+    ...mainAPIs,
+    ...workerAPIs,
+  })
+);
 
-const remoteEvents = {
-  ...mainEvents,
-  ...workerEvents,
-};
+/** @type {import("../common/remote-contracts.js").RemoteEvents} */
+const remoteEvents = /** @type {import("../common/remote-contracts.js").RemoteEvents} */ (
+  /** @type {unknown} */ ({
+    ...mainEvents,
+    ...workerEvents,
+  })
+);
 
 contextBridge.exposeInMainWorld('__remoteAPIs', remoteAPIs);
 contextBridge.exposeInMainWorld('__remoteEvents', remoteEvents);

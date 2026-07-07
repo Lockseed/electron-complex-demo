@@ -20,7 +20,7 @@ Run:
 npm run verify
 ```
 
-`npm run verify` currently runs format check plus lint. There is not yet a test or typecheck script.
+`npm run verify` currently runs format check plus lint plus typecheck. There is not yet a test script.
 
 ## Electron Boundary Changes
 
@@ -75,7 +75,7 @@ npm run verify:package
 
 Expected result:
 
-- Format check and lint pass.
+- Format check, lint, and typecheck pass.
 - Vite builds main, preload, worker, and renderer targets.
 - Electron Forge packages for the local platform.
 - Output appears under `out/`.

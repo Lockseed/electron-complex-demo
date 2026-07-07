@@ -21,7 +21,8 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write \"**/*.{js,mjs,cjs,vue,json,html,css,md}\"",
     "format:check": "prettier --check \"**/*.{js,mjs,cjs,vue,json,html,css,md}\"",
-    "verify": "npm run format:check && npm run lint",
+    "typecheck": "tsc --noEmit -p jsconfig.json && tsc --noEmit -p src/renderer/jsconfig.json",
+    "verify": "npm run format:check && npm run lint && npm run typecheck",
     "verify:package": "npm run verify && npm run package"
   },
   "devDependencies": {
@@ -46,6 +47,7 @@
     "rollup-plugin-visualizer": "^5.12.0",
     "semver": "^7.7.1",
     "tailwindcss": "^4.1.14",
+    "typescript": "~5.4.5",
     "vite": "^7.0.0",
     "vite-plugin-vue-devtools": "^8.0.0"
   },

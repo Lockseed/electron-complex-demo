@@ -15,6 +15,8 @@ This is an Electron Forge + Vite + Vue 3 demo application.
 - `docs/architecture/`: architecture notes and process-seam rules.
 - `docs/dev/`: scripts and verification notes.
 
+Preload/renderer interface contracts live in `src/common/remote-contracts.d.ts`, and renderer window globals are declared in `src/renderer/global.d.ts`.
+
 ## Actual Build Entries
 
 Electron Forge reads `forge.config.mjs`.
@@ -34,6 +36,7 @@ Electron Forge reads `forge.config.mjs`.
 - Build/package app directory: `npm run build`
 - Lint: `npm run lint`
 - Format check: `npm run format:check`
+- Type check: `npm run typecheck`
 - Baseline verification: `npm run verify`
 - Package app directory: `npm run package`
 - Analyze package: `npm run package:analyze`
@@ -100,4 +103,4 @@ Treat `package-lock.json` as source of truth unless explicitly changing dependen
 
 ## Current Gaps
 
-The repository currently has no test or typecheck script. Until those are added, `npm run verify` means format check plus lint.
+The repository currently has no test script. `npm run verify` means format check plus lint plus typecheck.

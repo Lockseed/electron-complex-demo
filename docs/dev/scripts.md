@@ -87,15 +87,25 @@ Runs Prettier check mode.
 
 This is part of the baseline verification path for every change.
 
+### `npm run typecheck`
+
+Runs:
+
+```sh
+tsc --noEmit -p jsconfig.json && tsc --noEmit -p src/renderer/jsconfig.json
+```
+
+The root config checks main, preload, worker, and shared JavaScript with `checkJs`. The renderer config currently checks renderer declarations and module resolution, but keeps renderer JavaScript `checkJs` disabled.
+
 ### `npm run verify`
 
 Runs:
 
 ```sh
-npm run format:check && npm run lint
+npm run format:check && npm run lint && npm run typecheck
 ```
 
-This is the current minimum verification path. It does not run tests or type checks because those scripts do not exist yet.
+This is the current minimum verification path. It does not run tests because a test script does not exist yet.
 
 ### `npm run verify:package`
 
@@ -113,14 +123,13 @@ These remain intentionally unimplemented until the matching tools and configs ex
 
 ```json
 {
-  "typecheck": "tsc --noEmit -p jsconfig.json",
   "test": "vitest run",
   "test:watch": "vitest",
   "test:e2e": "playwright test"
 }
 ```
 
-When `typecheck` and `test` exist, expand `verify` to include them.
+When `test` exists, expand `verify` to include it.
 
 Current baseline:
 
