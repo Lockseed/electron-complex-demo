@@ -13,7 +13,7 @@ This is an Electron Forge + Vite + Vue 3 demo application.
 - `src/worker/`: Electron `utilityProcess` worker for heavier IO/CPU work.
 - `src/common/`: code shared across processes.
 - `docs/architecture/`: architecture notes and process-seam rules.
-- `docs/dev/`: scripts and verification notes.
+- `docs/dev/`: scripts, CI, and verification notes.
 
 Preload/renderer interface contracts live in `src/common/remote-contracts.d.ts`, and renderer window globals are declared in `src/renderer/global.d.ts`.
 
@@ -58,6 +58,7 @@ npm run verify:package
 
 `npm run package` may need network access for Electron/Forge downloads or native dependency preparation.
 `npm run test:e2e` launches Electron through Playwright and expects `.vite/build/main.mjs` to exist; `npm run verify:package` creates that build first.
+CI is defined in `.github/workflows/ci.yml`; see `docs/dev/ci.md` before changing workflow or release checks.
 
 ## Architecture Rules
 
@@ -90,6 +91,7 @@ Do not allow arbitrary external protocols, arbitrary `file://` paths, or rendere
 - Update `docs/architecture/electron-boundaries.md` when changing main/preload/renderer/worker responsibilities.
 - Update `docs/dev/scripts.md` when adding or changing npm scripts.
 - Update `docs/dev/verification.md` when changing verification commands or expected manual checks.
+- Update `docs/dev/ci.md` when changing CI, release checks, or registry/cache policy.
 - Update preload global type/docs when changing `window.__remoteAPIs`, `window.__remoteEvents`, or `window.__remoteStores`.
 
 ## Generated And Local Files

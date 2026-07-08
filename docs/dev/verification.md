@@ -2,6 +2,8 @@
 
 Use this guide to choose the right verification path after a change.
 
+CI runs these paths in `.github/workflows/ci.yml`. See `docs/dev/ci.md` for runner and registry details.
+
 ## Baseline For Documentation-Only Changes
 
 Run:
@@ -93,6 +95,21 @@ Known environment issue:
 
 - `npm run publish`: requires explicit user request and publishing credentials.
 - `npm run make`: use when installer artifacts are needed; it is heavier than normal validation.
+
+## Release Candidate Check
+
+Before publishing or handing a release candidate to another machine, run:
+
+```sh
+npm ci
+npm run verify:package
+```
+
+For installer artifacts, also run:
+
+```sh
+npm run make
+```
 
 ## Generated Files
 
