@@ -97,3 +97,7 @@ out/
 # Visualizer Reports
 states.html
 states-*.html
+
+# Playwright
+test-results/
+playwright-report/

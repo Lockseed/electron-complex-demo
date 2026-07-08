@@ -24,8 +24,9 @@
     "typecheck": "tsc --noEmit -p jsconfig.json && tsc --noEmit -p src/renderer/jsconfig.json",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:e2e": "playwright test",
     "verify": "npm run format:check && npm run lint && npm run typecheck && npm test",
-    "verify:package": "npm run verify && npm run package"
+    "verify:package": "npm run verify && npm run package && npm run test:e2e"
   },
   "devDependencies": {
     "@electron-forge/cli": "^7.9.0",
@@ -38,6 +39,7 @@
     "@electron-forge/plugin-vite": "^7.9.0",
     "@electron/fuses": "^1.8.0",
     "@eslint/js": "^9.39.1",
+    "@playwright/test": "^1.61.1",
     "@tailwindcss/vite": "^4.1.0",
     "@vitejs/plugin-vue": "^6.0.0",
     "daisyui": "^5.5.5",

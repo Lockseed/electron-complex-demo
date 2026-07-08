@@ -132,6 +132,8 @@ Other safety mechanisms:
 - `protocol.handle('file')` restricts file access to app/user-data locations.
 - Forge fuses disable Node-as-app, `NODE_OPTIONS`, and CLI inspect arguments in packaged apps.
 
+`npm run test:e2e` covers the current Electron smoke/security baseline for preload globals, renderer Node isolation, BrowserWindow preferences, and external navigation interception.
+
 ## Common Change Recipes
 
 ### Add a renderer-callable main function
@@ -141,7 +143,7 @@ Other safety mechanisms:
 3. Validate inputs before native work.
 4. Use it from renderer through `window.__remoteAPIs.namespace.method()`.
 5. Update `src/common/remote-contracts.d.ts` and `src/renderer/global.d.ts` if the exposed interface changes.
-6. Verify with `npm run verify`, or `npm run verify:package` for boundary changes.
+6. Verify with `npm run verify`, or `npm run verify:package` for boundary/security changes.
 
 ### Add a worker function
 

@@ -38,6 +38,7 @@ Electron Forge reads `forge.config.mjs`.
 - Format check: `npm run format:check`
 - Type check: `npm run typecheck`
 - Test: `npm test`
+- Electron smoke test: `npm run test:e2e`
 - Baseline verification: `npm run verify`
 - Package app directory: `npm run package`
 - Analyze package: `npm run package:analyze`
@@ -56,6 +57,7 @@ npm run verify:package
 ```
 
 `npm run package` may need network access for Electron/Forge downloads or native dependency preparation.
+`npm run test:e2e` launches Electron through Playwright and expects `.vite/build/main.mjs` to exist; `npm run verify:package` creates that build first.
 
 ## Architecture Rules
 
@@ -104,4 +106,4 @@ Treat `package-lock.json` as source of truth unless explicitly changing dependen
 
 ## Current Gaps
 
-The repository currently has a unit test baseline, but no Electron end-to-end smoke test. `npm run verify` means format check plus lint plus typecheck plus unit tests.
+The repository has unit tests and an Electron smoke test. `npm run verify` means format check plus lint plus typecheck plus unit tests; use `npm run verify:package` for the packaged build and Electron smoke path.

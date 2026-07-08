@@ -24,7 +24,7 @@ npm run verify
 
 ## Electron Boundary Changes
 
-For changes touching these areas, run the baseline plus `npm run package`:
+For changes touching these areas, run the baseline plus packaging and Electron smoke tests:
 
 - `forge.config.mjs`
 - `vite.*.config.mjs`
@@ -42,7 +42,7 @@ Command:
 npm run verify:package
 ```
 
-`npm run package` may need network access. A known failure mode is DNS/network failure for registry or Electron download hosts, for example `getaddrinfo ENOTFOUND npmmirror.com`.
+`npm run package` may need network access. `npm run test:e2e` launches Electron through Playwright and needs a GUI-capable environment. A known failure mode is DNS/network failure for registry or Electron download hosts, for example `getaddrinfo ENOTFOUND npmmirror.com`.
 
 ## Manual Dev Smoke Check
 
@@ -78,6 +78,7 @@ Expected result:
 - Format check, lint, typecheck, and unit tests pass.
 - Vite builds main, preload, worker, and renderer targets.
 - Electron Forge packages for the local platform.
+- Playwright launches Electron and runs the smoke/security checks.
 - Output appears under `out/`.
 
 Known non-fatal warning:

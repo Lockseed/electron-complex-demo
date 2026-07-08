@@ -2,9 +2,13 @@ import { join } from 'node:path';
 import log from 'electron-log';
 import dayjs from 'dayjs';
 
-import isDev from '@/main/isDev.js';
-
 export const logger = log.scope('worker');
+
+const isNodeEnvSet = 'NODE_ENV' in process.env;
+const getFromNodeEnv = process.env.NODE_ENV !== 'production';
+const isEnvSet = 'ELECTRON_IS_DEV' in process.env;
+const getFromEnv = Number.parseInt(process.env.ELECTRON_IS_DEV, 10) === 1;
+const isDev = isEnvSet ? getFromEnv : isNodeEnvSet ? getFromNodeEnv : false;
 
 // log.initialize({
 //   preload: false,

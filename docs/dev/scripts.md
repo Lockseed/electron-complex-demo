@@ -115,6 +115,25 @@ The current unit test baseline covers:
 
 Runs Vitest in watch mode for local development.
 
+### `npm run test:e2e`
+
+Runs:
+
+```sh
+playwright test
+```
+
+This launches Electron through Playwright and loads `.vite/build/main.mjs`. Run `npm run package` first, or use `npm run verify:package`, so Forge/Vite build output exists.
+
+The current Electron smoke baseline checks:
+
+- Main window startup against the built renderer entry.
+- Hash route accessibility.
+- Preload globals and a sample remote API call.
+- Renderer Node globals stay unavailable.
+- BrowserWindow security preferences stay enabled.
+- Non-internal navigation is blocked and routed through `shell.openExternal`.
+
 ### `npm run verify`
 
 Runs:
@@ -130,22 +149,22 @@ This is the current minimum verification path.
 Runs:
 
 ```sh
-npm run verify && npm run package
+npm run verify && npm run package && npm run test:e2e
 ```
 
-Use this for Electron process, preload, worker, Forge, packaging, or IPC changes.
+Use this for Electron process, preload, worker, Forge, packaging, IPC, or navigation/security changes.
 
 ## Future Recommended Scripts
 
-These remain intentionally unimplemented until the matching tools and configs exist.
+This remains intentionally unimplemented until the matching tool and config exist.
 
 ```json
 {
-  "test:e2e": "playwright test"
+  "test:web": "playwright test --config playwright.web.config.mjs"
 }
 ```
 
-When `test:e2e` exists, document when to use it. Do not add it to the default `verify` path unless it is fast and stable enough for every local change.
+If a browser-based web E2E suite is added later, keep it separate from the Electron smoke suite unless it is fast and stable enough for every local change.
 
 Current baseline:
 
