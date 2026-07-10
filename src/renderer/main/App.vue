@@ -1,6 +1,25 @@
+<script setup>
+import { onErrorCaptured, ref } from 'vue';
+
+import AppErrorFallback from './components/AppErrorFallback.vue';
+import { createFriendlyErrorState } from './errorHandling.js';
+
+const rendererError = ref(null);
+
+onErrorCaptured((error) => {
+  if (!rendererError.value) {
+    rendererError.value = createFriendlyErrorState(error);
+  }
+});
+
+function reloadWindow() {
+  window.location.reload();
+}
+</script>
+
 <template>
   <div id="layout" class="min-h-screen bg-base-100">
-    <header class="d-navbar bg-base-200 shadow-lg sticky top-0 z-50">
+    <header v-if="!rendererError" class="d-navbar bg-base-200 shadow-lg sticky top-0 z-50">
       <div class="d-navbar-start">
         <div class="d-dropdown lg:hidden">
           <div tabindex="0" role="button" class="d-btn d-btn-ghost d-btn-circle">
@@ -39,8 +58,15 @@
       </div>
       <div class="d-navbar-end"></div>
     </header>
-    <main class="container mx-auto px-4 py-8">
-      <RouterView />
+    <main :class="rendererError ? '' : 'container mx-auto px-4 py-8'">
+      <AppErrorFallback
+        v-if="rendererError"
+        :title="rendererError.title"
+        :message="rendererError.message"
+        :detail="rendererError.detail"
+        @reload="reloadWindow"
+      />
+      <RouterView v-else />
     </main>
   </div>
 </template>

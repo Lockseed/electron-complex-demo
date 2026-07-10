@@ -69,6 +69,7 @@ Renderer code should stay UI-focused:
 - Do not import Node built-ins such as `fs`, `path`, or `child_process`.
 - Do not import from `src/main`, `src/preload`, or `src/worker`.
 - Do not construct raw IPC channel names in views.
+- Route and component failures should be caught at the root Vue app, with user-facing fallback UI in renderer and structured error logging through `electron-log`.
 
 If renderer needs a new native capability, add a named interface through main/worker plus preload.
 
