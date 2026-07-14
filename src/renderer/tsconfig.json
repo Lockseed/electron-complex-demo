@@ -1,0 +1,26 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "allowJs": false,
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "moduleDetection": "force",
+    "noEmit": true,
+    "types": ["vite/client"]
+  },
+  "include": ["./**/*"],
+  "exclude": [
+    "dist",
+    "node_modules",
+    "build",
+    "out",
+    ".vscode",
+    "coverage",
+    ".npm",
+    ".yarn",
+    ".vite",
+    ".temp",
+    "main/vite.config.js",
+    "secondary/vite.config.js"
+  ]
+}

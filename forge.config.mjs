@@ -33,17 +33,17 @@ export default {
         build: [
           {
             // `entry` is just an alias for `build.lib.entry` in the corresponding file of `config`.
-            entry: 'src/main/main.js',
+            entry: 'src/main/main.ts',
             config: 'vite.main.config.mjs',
             target: 'main',
           },
           {
-            entry: 'src/worker/worker.js',
+            entry: 'src/worker/worker.ts',
             config: 'vite.worker.config.mjs',
             target: 'main',
           },
           {
-            entry: 'src/preload/preload.js',
+            entry: 'src/preload/preload.ts',
             config: 'vite.preload.config.mjs',
             target: 'preload',
           },

@@ -1,0 +1,31 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "allowJs": false,
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "moduleDetection": "force",
+    "noEmit": true,
+    "types": ["node", "electron"]
+  },
+  "include": [
+    "forge.env.d.ts",
+    "src/common/**/*",
+    "src/main/**/*",
+    "src/preload/**/*",
+    "src/worker/**/*"
+  ],
+  "exclude": [
+    "dist",
+    "node_modules",
+    "build",
+    "out",
+    ".vscode",
+    "coverage",
+    ".npm",
+    ".yarn",
+    ".vite",
+    ".temp",
+    "src/renderer"
+  ]
+}

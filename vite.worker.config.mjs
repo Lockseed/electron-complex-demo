@@ -11,7 +11,7 @@ export default defineConfig({
   build: {
     target: 'esnext',
     lib: {
-      entry: 'src/worker/worker.js',
+      entry: 'src/worker/worker.ts',
       fileName: () => '[name].mjs',
       formats: ['es'],
     },

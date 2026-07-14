@@ -1,14 +1,16 @@
-<script setup>
-import { ref, onMounted, computed, watchEffect } from 'vue';
-import eventService from '@/renderer/apis/eventService';
+<script setup lang="ts">
+import { computed, ref, watchEffect } from 'vue';
+import eventService, { type EventRecord } from '@/renderer/apis/eventService.js';
 import EventCard from '../components/EventCard.vue';
 
-const props = defineProps({
-  page: {
-    type: Number,
-    default: 1,
-  },
-});
+const props = withDefaults(
+  defineProps<{
+    page?: number;
+  }>(),
+  {
+    page: 1,
+  }
+);
 
 const page = computed(() => props.page);
 const totalEvents = ref(0);
@@ -17,23 +19,26 @@ const hasNextPage = computed(() => {
   return page.value < totalPages;
 });
 
-// 获取事件列表
-const events = ref(null);
-function getEvents(page) {
-  eventService
-    .getEvents(3, page)
-    .then((response) => {
-      events.value = response.data;
-      totalEvents.value = response.headers['x-total-count'];
-    })
-    .catch((error) => {
-      console.error('Error fetching events:', error);
-    });
+const events = ref<EventRecord[]>([]);
+
+function normalizeCountHeader(value: string | string[] | undefined): number {
+  const rawValue = Array.isArray(value) ? value[0] : value;
+  const parsed = Number.parseInt(rawValue ?? '0', 10);
+  return Number.isNaN(parsed) ? 0 : parsed;
 }
-onMounted(() => {
-  watchEffect(() => {
-    getEvents(page.value);
-  });
+
+async function getEvents(currentPage: number): Promise<void> {
+  try {
+    const response = await eventService.getEvents(3, currentPage);
+    events.value = response.data;
+    totalEvents.value = normalizeCountHeader(response.headers['x-total-count']);
+  } catch (error) {
+    console.error('Error fetching events:', error);
+  }
+}
+
+watchEffect(() => {
+  void getEvents(page.value);
 });
 </script>
 
@@ -42,7 +47,7 @@ onMounted(() => {
     <h1 class="text-4xl font-bold text-center mb-8 text-base-content">Events for Good</h1>
 
     <div class="events flex flex-col gap-6 mb-8 items-center">
-      <EventCard v-for="event in events" :key="event.key" :event="event" />
+      <EventCard v-for="event in events" :key="event.id" :event="event" />
     </div>
 
     <div class="d-join grid grid-cols-2 max-w-xs mx-auto">

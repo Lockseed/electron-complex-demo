@@ -1,10 +1,9 @@
-<script setup>
-defineProps({
-  event: {
-    type: Object,
-    required: true,
-  },
-});
+<script setup lang="ts">
+import type { EventRecord } from '@/renderer/apis/eventService.js';
+
+defineProps<{
+  event: EventRecord;
+}>();
 </script>
 
 <template>

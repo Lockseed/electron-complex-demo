@@ -1,21 +1,21 @@
-<script setup>
-defineProps({
-  title: {
-    type: String,
-    default: 'Something went wrong',
-  },
-  message: {
-    type: String,
-    default:
+<script setup lang="ts">
+withDefaults(
+  defineProps<{
+    title?: string;
+    message?: string;
+    detail?: string;
+  }>(),
+  {
+    title: 'Something went wrong',
+    message:
       'The page ran into an unexpected problem. Try refreshing this window. If the issue keeps happening, please contact support.',
-  },
-  detail: {
-    type: String,
-    default: '',
-  },
-});
+    detail: '',
+  }
+);
 
-defineEmits(['reload']);
+defineEmits<{
+  reload: [];
+}>();
 </script>
 
 <template>

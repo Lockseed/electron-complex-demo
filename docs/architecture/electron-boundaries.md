@@ -28,7 +28,7 @@ utility worker
 
 ## Main Process
 
-Main starts at `src/main/main.js`.
+Main starts at `src/main/main.ts`.
 
 Startup order matters:
 
@@ -45,7 +45,7 @@ When adding native behavior, prefer putting the implementation in main or worker
 
 ## Preload
 
-Preload starts at `src/preload/preload.js`.
+Preload starts at `src/preload/preload.ts`.
 
 It exposes these renderer globals:
 
@@ -55,13 +55,13 @@ It exposes these renderer globals:
 
 Preload may import `electron` and use `ipcRenderer`, but it must not expose `ipcRenderer` itself. Exposed values should be narrow callable functions or subscription functions.
 
-The shared TypeScript contract for these globals lives in `src/common/remote-contracts.d.ts`. The renderer-facing `Window` augmentation lives in `src/renderer/global.d.ts`.
+The shared TypeScript contract for these globals lives in `src/common/remote-contracts.ts`. The renderer-facing `Window` augmentation lives in `src/renderer/global.d.ts`.
 
 ## Renderer
 
-Main renderer starts at `src/renderer/main/main.js`.
+Main renderer starts at `src/renderer/main/main.ts`.
 
-Secondary renderer starts at `src/renderer/secondary/main.js`.
+Secondary renderer starts at `src/renderer/secondary/main.ts`.
 
 Renderer code should stay UI-focused:
 
@@ -75,19 +75,19 @@ If renderer needs a new native capability, add a named interface through main/wo
 
 ## Worker
 
-Worker starts at `src/worker/worker.js` and is launched by `src/main/workerManager.js` using Electron `utilityProcess`.
+Worker starts at `src/worker/worker.ts` and is launched by `src/main/workerManager.ts` using Electron `utilityProcess`.
 
 Use worker for work that should not block the main process, such as heavier file or CPU operations. Keep window management, menus, protocols, and app lifecycle in main.
 
-Worker APIs are registered in `src/worker/handlers.js`. Worker events are registered in `src/worker/events.js`.
+Worker APIs are registered in `src/worker/handlers.ts`. Worker events are registered in `src/worker/events.ts`.
 
 ## IPC And RPC Rules
 
-Main-process request handlers live behind `src/main/handlers.js`.
+Main-process request handlers live behind `src/main/handlers.ts`.
 
-Main-process events live behind `src/main/events.js`.
+Main-process events live behind `src/main/events.ts`.
 
-Worker request handlers live behind `src/worker/handlers.js`.
+Worker request handlers live behind `src/worker/handlers.ts`.
 
 Channel names use:
 
@@ -140,16 +140,16 @@ Other safety mechanisms:
 ### Add a renderer-callable main function
 
 1. Add implementation in a main-owned module.
-2. Export it through `allHandlers` in `src/main/handlers.js`.
+2. Export it through `allHandlers` in `src/main/handlers.ts`.
 3. Validate inputs before native work.
 4. Use it from renderer through `window.__remoteAPIs.namespace.method()`.
-5. Update `src/common/remote-contracts.d.ts` and `src/renderer/global.d.ts` if the exposed interface changes.
+5. Update `src/common/remote-contracts.ts` and `src/renderer/global.d.ts` if the exposed interface changes.
 6. Verify with `npm run verify`, or `npm run verify:package` for boundary/security changes.
 
 ### Add a worker function
 
 1. Add implementation under `src/worker/`.
-2. Export it through `allWorkerHandlers` in `src/worker/handlers.js`.
+2. Export it through `allWorkerHandlers` in `src/worker/handlers.ts`.
 3. Keep arguments/results serializable.
 4. Use it from renderer through the generated worker remote API.
 5. Add or update focused unit tests when the worker logic can be tested without launching Electron.
@@ -158,6 +158,6 @@ Other safety mechanisms:
 ### Add a renderer route or view
 
 1. Work under `src/renderer/main/`.
-2. Register routes in `src/renderer/main/router/index.js`.
+2. Register routes in `src/renderer/main/router/index.ts`.
 3. Use Tailwind 4 and daisyUI 5 conventions from `.github/instructions/daisyui.instructions.md`.
 4. Do not introduce direct Electron/Node imports.

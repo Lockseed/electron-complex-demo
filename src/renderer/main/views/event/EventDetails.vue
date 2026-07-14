@@ -1,12 +1,9 @@
-<script setup>
-import { computed } from 'vue';
-const props = defineProps({
-  event: {
-    type: Object,
-    required: true,
-  },
-});
-const event = computed(() => props.event);
+<script setup lang="ts">
+import type { EventRecord } from '@/renderer/apis/eventService.js';
+
+const { event } = defineProps<{
+  event: EventRecord;
+}>();
 </script>
 
 <template>

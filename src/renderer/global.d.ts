@@ -1,4 +1,4 @@
-import type { RemoteAPIs, RemoteEvents, RemoteStores } from '../common/remote-contracts';
+import type { RemoteAPIs, RemoteEvents, RemoteStores } from '../common/remote-contracts.js';
 
 declare global {
   interface Window {

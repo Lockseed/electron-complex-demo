@@ -1,10 +1,10 @@
-<script setup>
+<script setup lang="ts">
 import { onErrorCaptured, ref } from 'vue';
 
 import AppErrorFallback from './components/AppErrorFallback.vue';
-import { createFriendlyErrorState } from './errorHandling.js';
+import { createFriendlyErrorState, type FriendlyErrorState } from './errorHandling.js';
 
-const rendererError = ref(null);
+const rendererError = ref<FriendlyErrorState | null>(null);
 
 onErrorCaptured((error) => {
   if (!rendererError.value) {
@@ -12,7 +12,7 @@ onErrorCaptured((error) => {
   }
 });
 
-function reloadWindow() {
+function reloadWindow(): void {
   window.location.reload();
 }
 </script>

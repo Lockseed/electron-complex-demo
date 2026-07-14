@@ -92,10 +92,10 @@ This is part of the baseline verification path for every change.
 Runs:
 
 ```sh
-tsc --noEmit -p jsconfig.json && tsc --noEmit -p src/renderer/jsconfig.json
+tsc --noEmit -p tsconfig.electron.json && vue-tsc --noEmit -p src/renderer/tsconfig.json
 ```
 
-The root config checks main, preload, worker, and shared JavaScript with `checkJs`. The renderer config currently checks renderer declarations and module resolution, but keeps renderer JavaScript `checkJs` disabled.
+The Electron config checks `src/main`, `src/preload`, `src/worker`, and `src/common` as strict TypeScript. The renderer config checks renderer TypeScript plus Vue SFCs through `vue-tsc`.
 
 ### `npm test`
 

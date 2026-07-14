@@ -22,7 +22,7 @@ Run:
 npm run verify
 ```
 
-`npm run verify` currently runs format check plus lint plus typecheck plus unit tests.
+`npm run verify` currently runs format check plus lint plus strict TypeScript and Vue typecheck plus unit tests.
 
 ## Electron Boundary Changes
 
